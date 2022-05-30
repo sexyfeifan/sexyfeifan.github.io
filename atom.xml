@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://sexyfeifan.github.io</id>
+    <title>@sexyfeifan</title>
+    <updated>2022-05-30T04:15:58.743Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://sexyfeifan.github.io"/>
+    <link rel="self" href="https://sexyfeifan.github.io/atom.xml"/>
+    <subtitle>——不要习惯了黑暗就为黑暗辩护; 
+
+不要为自己的苟且而得意洋洋; 
+
+不要嘲讽那些比自己更勇敢、更有热量的人们。 
+
+可以卑微如尘土，不可扭曲如蛆虫。
+
+
+</subtitle>
+    <logo>https://sexyfeifan.github.io/images/avatar.png</logo>
+    <icon>https://sexyfeifan.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2022, @sexyfeifan</rights>
+    <entry>
+        <title type="html"><![CDATA[技术需求]]></title>
+        <id>https://sexyfeifan.github.io/post/ji-zhu-xu-qiu/</id>
+        <link href="https://sexyfeifan.github.io/post/ji-zhu-xu-qiu/">
+        </link>
+        <updated>2022-05-30T04:14:27.000Z</updated>
+        <content type="html"><![CDATA[<p>一般性必备：<br>
+Linux基础入门：<br>
+https://www.linuxprobe.com/</p>
+<p>免费域名申请：<br>
+https://www.freenom.com</p>
+<p>域名解析：<br>
+https://www.cloudflare.com</p>
+<p>TLS证书申请：<br>
+https://www.v2rayssr.com/ssl.html<br>
+https://ohttps.com</p>
+<p>一键化安装节点：<br>
+https://github.com/proxysu/ProxySU</p>
+<p>翻墙脚本搭建：<br>
+https://github.com/233boy/v2ray/wiki/V2Ray%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC<br>
+https://github.com/vaxilu/x-ui<br>
+https://github.com/mack-a/v2ray-agent<br>
+https://github.com/wulabing/Xray_onekey<br>
+https://v2raytech.com/script-collection/</p>
+<p>telegram代理mtproxy脚本：<br>
+https://github.com/ellermister/mtproxy<br>
+https://github.com/sunpma/mtp</p>
+<p>bbr加速：<br>
+https://www.v2rayssr.com/bbr.html<br>
+https://www.91yun.co/archives/6281</p>
+<p>扩展性需求：<br>
+安装warp脚本获得ipv4和ipv6双栈：<br>
+https://github.com/missuo/CloudflareWarp<br>
+https://github.com/veip007/EUserv-warp/<br>
+https://github.com/jokenee/cfwarp<br>
+https://p3terx.com/archives/cloudflare-warp-configuration-script.html</p>
+<p>一键dd换系统：<br>
+https://www.moeelf.com/archives/293.html<br>
+https://github.com/veip007/dd<br>
+https://zhouchunyu.com/141.html</p>
+<p>监控探针：<br>
+https://github.com/naiba/nezha<br>
+https://github.com/CokeMine/ServerStatus-Hotaru</p>
+<p>挂机面板：<br>
+https://github.com/whyour/qinglong</p>
+<p>VPS信息测速：<br>
+https://github.com/FunctionClub/ZBench<br>
+https://github.com/91yun/91yuntest</p>
+<p>流媒体检测：<br>
+https://github.com/CoiaPrant/MediaUnlock_Test<br>
+https://github.com/sjlleo/netflix-verify<br>
+https://github.com/sjlleo/VerifyDisneyPlus<br>
+https://github.com/sjlleo/TubeCheck<br>
+https://github.com/Quzard/netflix-all-verify</p>
+<p>流媒体解锁：<br>
+https://github.com/myxuchangbin/dnsmasq_sniproxy_install/</p>
+<p>IP端口多地ping<br>
+http://ping.pe/<br>
+http://port.ping.pe/<br>
+https://ping.sx/ping<br>
+https://ping.sx/check-port</p>
+<p>查IP信息<br>
+https://ip.xxoo.net/<br>
+https://ip.skk.moe/<br>
+https://ipshu.com/<br>
+https://en.ipip.net/<br>
+https://www.chaipip.com/index.html</p>
+<p>原生IP检测：<br>
+https://bgp.he.net/</p>
+<p>机场搭建：<br>
+https://github.com/Anankke/SSPanel-Uim<br>
+https://github.com/v2board/v2board<br>
+https://github.com/XrayR-project/XrayR</p>
+<p>IDC搭建：<br>
+https://solusvm.com/<br>
+https://www.idcsmart.com/<br>
+http://www.tasiyun.com/<br>
+https://virtualizor.com/<br>
+https://www.whmcs.com/</p>
+<p>中转面板：<br>
+https://github.com/Aurora-Admin-Panel/deploy<br>
+https://heaid.top/index.php/archives/67/</p>
+<p>建站：<br>
+http://www.hostcli.com/<br>
+https://www.aapanel.com/index.html</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[记,见证了一个软件的成长]]></title>
+        <id>https://sexyfeifan.github.io/post/ji-jian-zheng-liao-yi-ge-ruan-jian-de-cheng-chang/</id>
+        <link href="https://sexyfeifan.github.io/post/ji-jian-zheng-liao-yi-ge-ruan-jian-de-cheng-chang/">
+        </link>
+        <updated>2022-05-18T03:20:48.000Z</updated>
+        <content type="html"><![CDATA[<p>好好看片<br>
+<img src="https://sexyfeifan.github.io/post-images/1652844127331.png" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
+</feed>

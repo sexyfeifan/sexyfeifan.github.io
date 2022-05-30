@@ -1,0 +1,619 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title> 适合小白的PT盒子入门指南 | @sexyfeifan</title>
+<link rel="shortcut icon" href="https://sexyfeifan.github.io/favicon.ico?v=1653884118698">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://sexyfeifan.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title=" 适合小白的PT盒子入门指南 | @sexyfeifan - Atom Feed" href="https://sexyfeifan.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="适合小白的PT盒子入门指南
+关于PT盒子/seedbox
+盒子是什么？简单说就是拥有高带宽（特别是上传带宽的）的7x24小时运行的远程电脑。
+本文主要给PT萌新一个刷流的思路及指南，很多内容是在各处搜刮 (会尽量列明出处，如果您不希望内容出..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<!-- 脚本文件 -->
+<script src="https://unpkg.com/@waline/client@v2/dist/waline.js"></script>
+<!-- 样式文件 -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@waline/client@v2/dist/waline.css"
+/>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sexyfeifan.github.io">
+  <img class="avatar" src="https://sexyfeifan.github.io/images/avatar.png?v=1653884118698" alt="">
+  </a>
+  <h1 class="site-title">
+    @sexyfeifan
+  </h1>
+  <p class="site-description">
+    ——不要习惯了黑暗就为黑暗辩护; 
+
+不要为自己的苟且而得意洋洋; 
+
+不要嘲讽那些比自己更勇敢、更有热量的人们。 
+
+可以卑微如尘土，不可扭曲如蛆虫。
+
+
+
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/sexyfeifan" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://weibo.com/u/1745395015" target="_blank">
+          <i class="ri-weibo-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+               适合小白的PT盒子入门指南
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-05-15
+              </span>
+              <span>
+                11 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="适合小白的pt盒子入门指南">适合小白的PT盒子入门指南</h1>
+<h2 id="关于pt盒子seedbox">关于PT盒子/seedbox</h2>
+<p>盒子是什么？简单说就是拥有高带宽（特别是上传带宽的）的7x24小时运行的远程电脑。</p>
+<p>本文主要给PT萌新一个刷流的思路及指南，很多内容是在各处搜刮 (会尽量列明出处，如果您不希望内容出现在这，可以私信我），参考大佬的思路，及自己折腾挺多个日夜捣鼓出来的。对萌新应该还是会有些帮助，如果是大佬，可以在评论区点评，也可以直接绕道，不胜感激。</p>
+<p>如果按照本文的设置，应该可以达到每天6-8T的上传量 （当然这需要看R了那些站的种子），每个月突破200T应该不成问题。这是楼主最近一段时间的日流量图，除了前两天刚到手在优化之外，其余基本都是6-8T之间的上传。</p>
+<figure data-type="image" tabindex="1"><img src="https://image.cubox.pro/article/2022051109472190900/53605.jpg" alt="" loading="lazy"></figure>
+<h3 id="视频教程已更新可移步"><strong><em>视频教程已更新，可移步</em></strong></h3>
+<p><a href="https://link.zhihu.com/?target=https%3A//www.bilibili.com/video/bv1mT4y1U78M">月刷200T+，适合小白的PT盒子入门指南_哔哩哔哩_bilibili www.bilibili.com/video/bv1mT4y1U78M<img src="https://image.cubox.pro/article/2022051109472183714/28992.jpg" alt="" loading="lazy"></a></p>
+<h3 id="盒子购买">盒子购买</h3>
+<p>楼主用的HETZNER的拍卖机，对其他机器没有研究，各位可以直接照搬。</p>
+<p>同款拍卖机 (涨价了, 以前23€, 现在30€ ，折合最新的汇率差不多210RMB）</p>
+<figure data-type="image" tabindex="2"><img src="https://image.cubox.pro/article/2022051109472128378/72964.jpg" alt="" loading="lazy"></figure>
+<p>这是购买链接 <a href="https://link.zhihu.com/?target=https%3A//www.hetzner.com/sb%3Fcountry%3Dot">Server auction - Hetzner Online GmbH</a></p>
+<p>购买流程： 注册账号→付款购买→购买之后会收到邮件需要验证身份，可以持护照加水印解决。购买需要外币卡(mastercard/visa), 也可绑定paypal使用。听说paypal支付20欧可以免护照验证可以试试。</p>
+<p>如果你想要便宜的机器，可以尝试One Provider (OP)风靡一时的3o盒。然而现在也不便宜。</p>
+<figure data-type="image" tabindex="3"><img src="https://image.cubox.pro/article/2022051109472151551/99240.jpg" alt="" loading="lazy"></figure>
+<p>附上购买链接：<a href="https://link.zhihu.com/?target=https%3A//oneprovider.com/dedicated-servers/paris-france">https://oneprovider.com/dedicated-servers/paris-france</a></p>
+<h2 id="盒子系统一键安装及一键优化">盒子系统一键安装及一键优化</h2>
+<h3 id="稍后用到的工具及大佬脚本">稍后用到的工具及大佬脚本</h3>
+<ul>
+<li>
+<p>一键安装Debian 10：仅适用软Raid, 多硬盘且硬盘大小相同的Hetzner独服</p>
+<p>echo x | installimage -p /boot:ext3:1G,/:ext4:all -l 0 -r yes -i images/Debian-1010-buster-64-minimal.tar.gz  -a -n Hz &amp;&amp; reboot</p>
+</li>
+<li>
+<p>Jerry大佬一键优化脚本 （安装QB, 安装Autoremove-torrents, BBR优化)</p>
+<p>bash &lt;(wget -qO- https://raw.githubusercontent.com/jerry048/Dedicated-Seedbox/main/Install.sh) user password 8 # user 用户名自己取，password 密码自己设，最后一位是QB缓存大小 (GB), 大佬推荐设为系统内存的1/4到1/8，我选的盒子是32G，设置了8GB</p>
+</li>
+<li>
+<p>Finalshell SSH工具: <a href="https://link.zhihu.com/?target=http%3A//www.hostbuf.com/">http://www.hostbuf.com/</a> 用来连接你的盒子，可以浏览目录等</p>
+</li>
+<li>
+<p>Screen: 这是个命令行终端软件，作用是防止你跟服务器失联。碰到的时候你就懂了，不一定会用到。可查看参考里菜佬的使用介绍</p>
+</li>
+</ul>
+<h2 id="手把手指南">手把手指南</h2>
+<h3 id="一键安装debian-10"><strong>一键安装Debian 10</strong></h3>
+<ul>
+<li>进入HZ管理界面，进入rescue救援模式，选择64位，选择激活救援系统</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://image.cubox.pro/article/2022051109472119889/32688.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li>记下出现的账号跟密码，用来后面finalshell登录盒子</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://image.cubox.pro/article/2022051109472132887/11702.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li>进入重置界面，进行一次硬件重置，重置后你的邮箱会收到邮件，等成功后可用第二步记下的账户密码登录你的盒子-</li>
+</ul>
+<figure data-type="image" tabindex="6"><img src="https://image.cubox.pro/article/2022051109472166066/40667.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li>打开finalshell，选择左上角那个，出来连接管理器，接着选左上角那个，新建一个ssh连接(linux), 跳出来窗口。名称随意，主机是你hz盒子的ipv4地址，端口选22，用户名密码用第二步记录下的。-</li>
+</ul>
+<figure data-type="image" tabindex="7"><img src="https://image.cubox.pro/article/2022051109472189063/20078.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://image.cubox.pro/article/2022051109472173910/11985.jpg" alt="" loading="lazy"></figure>
+<p>连接之后就进入到了盒子的rescue模式</p>
+<ul>
+<li>直接敲入一键代码，等待安装即可，安装完成后会自动断开，等待一会再次手动进行连接，连接时跳出警告，接受并保存即可-</li>
+</ul>
+<figure data-type="image" tabindex="9"><img src="https://image.cubox.pro/article/2022051109472111171/21059.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li></li>
+</ul>
+<p>到这里我们已经成功安装完Debian 10系统</p>
+<h3 id="安装杰佬一键脚本"><strong>安装杰佬一键脚本</strong></h3>
+<ul>
+<li>上面连接盒子之后，直接敲入杰佬一键脚本代码运行</li>
+<li>是否安装QB，输入Y, 选择QB版本, 你可以选4.1.9 也可以选4.3.8 (4.3.8 QB里可以进行更多设置，看你后面想不想自己折腾）</li>
+</ul>
+<figure data-type="image" tabindex="10"><img src="https://image.cubox.pro/article/2022051109472174318/48938.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li>是否安装Deluge，我只用QB，所以选了N; 是否安装autoremove-torrents，选Y-</li>
+</ul>
+<figure data-type="image" tabindex="11"><img src="https://image.cubox.pro/article/2022051109472181971/45618.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li>是否需要预留存储空间，想要设置的最小做种时间，一路回车即可-</li>
+</ul>
+<figure data-type="image" tabindex="12"><img src="https://image.cubox.pro/article/2022051109472169259/87308.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li>SSH config的version，选N (default)即可；后来跳出来的keep本地的即可</li>
+</ul>
+<figure data-type="image" tabindex="13"><img src="https://image.cubox.pro/article/2022051109472170504/88800.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://image.cubox.pro/article/2022051109472180897/83640.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li>是否安装BBR, 当然选Y-</li>
+</ul>
+<figure data-type="image" tabindex="15"><img src="https://image.cubox.pro/article/2022051109472128043/89368.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li>BBR安装完成，需要重启一次生效，我们直接重启-</li>
+</ul>
+<figure data-type="image" tabindex="16"><img src="https://image.cubox.pro/article/2022051109472195770/83790.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li></li>
+</ul>
+<p>到这里就大功告成了</p>
+<p>这里分享一个查看盒子配置的指令</p>
+<pre><code>wget -qO- bench.sh|bash #可以查看盒子内存，硬盘I/O, 网络测速
+</code></pre>
+<h2 id="flexget配置">Flexget配置</h2>
+<h3 id="安装flexget">安装flexget</h3>
+<pre><code>pip3 install flexget #安装flexget
+which flexget #查询 FlexGet 安装位置，例如位置为 /usr/local/bin/flexget
+flexget -V #查看flexget版本
+</code></pre>
+<h3 id="配置flexget目录及config文件">配置Flexget目录及config文件</h3>
+<pre><code>mkdir /root/.flexget #创建.flexget目录
+nano /root/.flexget/config.yml # 创建及更改config.yml内容
+mkdir ~/.flexget/plugins &amp;&amp; cd ~/.flexget/plugins &amp;&amp; wget https://github.com/Juszoe/flexget-nexusphp/releases/download/v1.4/nexusphp.py #创建plugins目录，下载nexusphp插件
+flexget web passwd Peterpt@pt311%s #设置web ui 后台密码 为 Peterpt@pt311%s
+flexget daemon start --daemonize #开启 webui 后台运行
+</code></pre>
+<p>实际情况如图</p>
+<figure data-type="image" tabindex="17"><img src="https://image.cubox.pro/article/2022051109472191412/17008.jpg" alt="" loading="lazy"></figure>
+<p>webui运行后，直接登录浏览器，3539为我设置的端口，前面为盒子的ipv4地址</p>
+<figure data-type="image" tabindex="18"><img src="https://image.cubox.pro/article/2022051109472132129/68014.jpg" alt="" loading="lazy"></figure>
+<h3 id="config文件样本">Config文件样本</h3>
+<p>config.yml可以登录web ui后台去编辑也可以用notepad++打开.flexget文件夹下面的config.yml来编辑。这里给出个简单的样本</p>
+<pre><code>web_server:
+  bind: 0.0.0.0
+  port: 3539
+  web_ui: yes
+
+schedules:
+  - tasks: [Test]
+    interval:
+      minutes: 5 #每5分钟R一次种子
+
+templates:
+  qb:
+    qbittorrent:
+      path: /home/你设置的username/qbittorrent/Downloads/
+      host: 你盒子的Ipv4地址
+      port: 8080
+      username: 用户名
+      password: 密码
+
+# 任务
+tasks:
+  Test:
+    rss: 站点RSS链接
+      url: 
+      other_fields: [link]
+    nexusphp:
+      cookie: '站点的cookie'
+      hr: no   
+    content_size: #这里我筛选20G到300G的种子
+      min: 20000
+      max: 307200 
+      strict: no 
+    template: qb
+    qbittorrent:
+      label: Test # QB里设置category为Test
+      maxupspeed: 100000 #设置限速100MB/s 针对有上传限速的网站
+</code></pre>
+<p>编辑完后在webui后台选择Tasks→Execute，这里先进行一次learn, 来筛选掉符合条件的旧种</p>
+<figure data-type="image" tabindex="19"><img src="https://image.cubox.pro/article/2022051109472189337/73319.jpg" alt="" loading="lazy"></figure>
+<h3 id="flexget其他指令">flexget其他指令</h3>
+<figure data-type="image" tabindex="20"><img src="https://image.cubox.pro/article/2022051109472120292/30999.jpg" alt="" loading="lazy"></figure>
+<h2 id="art-配置">ART 配置</h2>
+<h3 id="创建configyml及logs目录">创建config.yml及logs目录</h3>
+<pre><code>cd /root
+mkdir art
+mkdir ~/art/logs
+nano /root/art/config.yml
+</code></pre>
+<h3 id="测试运行">测试运行</h3>
+<pre><code>autoremove-torrents -v -c /root/art/config.yml #测试运行一次art,并不会删种，可以查看是否有错误
+</code></pre>
+<h3 id="一些说明">一些说明</h3>
+<figure data-type="image" tabindex="21"><img src="https://image.cubox.pro/article/2022051109472192176/23345.jpg" alt="" loading="lazy"></figure>
+<h3 id="编辑定时任务crontab-e">编辑定时任务crontab -e</h3>
+<ul>
+<li>
+<p>查看autoremove-torrents所在目录</p>
+<p>which autoremove-torrents</p>
+</li>
+<li>
+<p>创建定时任务，输入 crontab -e，写入如下指令，然后ctrl+X退出保存即可</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="22"><img src="https://image.cubox.pro/article/2022051109472127461/10229.jpg" alt="" loading="lazy"></figure>
+<p>第一个框为设置3min运行一次，注意*之间用tab键来缩进；第二个框为上面查到的目录；第三个框指定配置文件所在路径及指定logs文件所在目录；</p>
+<ul>
+<li>
+<p>以下命令来重启cron服务</p>
+<p>systemctl restart cron.service</p>
+</li>
+<li>
+<p>crontab -l 指令可以查看已有的cron服务</p>
+</li>
+</ul>
+<h3 id="查看是否运行">查看是否运行</h3>
+<p>进入logs文件夹，logs文件按天会单独列出</p>
+<figure data-type="image" tabindex="23"><img src="https://image.cubox.pro/article/2022051109472136911/64605.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="24"><img src="https://image.cubox.pro/article/2022051109472169412/33213.jpg" alt="" loading="lazy"></figure>
+<p>观察最近的logs文件是否有按照3min运行一次，可以看到这边正常运行</p>
+<h2 id="删种策略">删种策略</h2>
+<h3 id="autoremove-torrents-官方文档">Autoremove torrents 官方文档：</h3>
+<p><a href="https://link.zhihu.com/?target=https%3A//autoremove-torrents.readthedocs.io/zh_CN/latest/config.html%23part-1-task-name">配置 - autoremove-torrents 1.5.3 文档</a></p>
+<h3 id="黑车">黑车</h3>
+<p>删除下载速度远超上传的种子</p>
+<pre><code>clean_by_speed:
+      status: Downloading
+      excluded_categories:
+        - MySaved
+      remove: download_speed &gt; 40000 and upload_speed &lt; 25000
+</code></pre>
+<p>HR种子：ex. 如下载大于50%触发HR，可额外附加progress &lt; 50</p>
+<h3 id="慢车">慢车</h3>
+<ul>
+<li>
+<p>2小时内慢速上传</p>
+<p>remove: create_time &gt; 7200 and (average_uploadspeed &lt; 500 or ratio &lt; 1)</p>
+</li>
+</ul>
+<h3 id="删除完成的种子">删除完成的种子</h3>
+<ul>
+<li>
+<p>低速种策略</p>
+<p>clean_Seeding_S1:<br>
+status:<br>
+- Uploading<br>
+excluded_categories:<br>
+- MySaved<br>
+remove: (leecher &lt; 3 and upload_speed &lt; 50) or (average_uploadspeed &lt; 400)</p>
+</li>
+<li>
+<p>低速种策略2</p>
+<p>clean_Seeding_S2:<br>
+status:<br>
+- Uploading<br>
+excluded_categories:<br>
+- MySaved<br>
+remove: upload_speed &lt; 2 or connected_leecher &lt; 1</p>
+</li>
+</ul>
+<h3 id="超时下载">超时下载</h3>
+<ul>
+<li>
+<p>24小时内未完成删除</p>
+<p>24hr_free_countdown_strategy:<br>
+excluded_categories:<br>
+- MySaved<br>
+remove: progress &lt; 100 and create_time &gt; 86400</p>
+</li>
+</ul>
+<h3 id="hr-删种">HR 删种</h3>
+<ul>
+<li>
+<p>做种超过140h后删除（可根据不同站点自己设置时间）</p>
+<p>remove: seeding_time &gt; 504000 and average_uploadspeed &lt; 400</p>
+</li>
+</ul>
+<h3 id="限制最大下载数">限制最大下载数</h3>
+<pre><code>limit_max_torrents:
+      status:
+        - downloading
+      excluded_categories:
+        - MySaved
+      maximum_number: 
+        limit: 16
+        action: remove-inactive-seeds
+</code></pre>
+<h3 id="其他策略">其他策略</h3>
+<ul>
+<li>
+<p>限制最大上传量（针对某些非VIP 100%黑种站）：upload_ratio: 3</p>
+</li>
+<li>
+<p>根据做种人数/下载人数：</p>
+<p>delete_by_peernumber:<br>
+status:<br>
+- Downloading<br>
+excluded_categories:<br>
+- MySaved<br>
+remove: seeder &gt; 3 or connected_leecher &lt; 2</p>
+</li>
+</ul>
+<h3 id="样本">样本</h3>
+<pre><code>delete_task:
+  client: qbittorrent
+  host: http://51.159.35.144:8080
+  username: admin
+  password: admin123456
+  strategies: 
+    24hr_free_countdown_strategy:
+      excluded_categories:
+        - MySaved
+      remove: progress &lt; 100 and create_time &gt; 86400 # not finished after 24 hours
+    clean_by_upload_ratio_strategy:
+      categories:
+        - XXX
+      upload_ratio: 3
+    clean_slow_uploading_S1: 
+      status: 
+        - Downloading
+      excluded_categories:
+        - MySaved
+      remove: create_time &gt; 7200 and (average_uploadspeed &lt; 300 or ratio &lt; 1) # 2 hours
+    clean_slow_uploading_S2:
+      status:
+        - Downloading
+      excluded_categories:
+        - MySaved
+      remove: seeder &gt; 3 or connected_leecher &lt; 2
+    clean_Seeding_S1:
+      status:
+        - Uploading
+      excluded_categories:
+        - MySaved
+      remove: (leecher &lt; 3 and upload_speed &lt; 50) or (average_uploadspeed &lt; 400)
+    clean_Seeding_S2:
+      status:
+        - Uploading
+      excluded_categories:
+        - MySaved
+      remove: upload_speed &lt; 2 or connected_leecher &lt; 1   
+    clean_by_speed_S1:
+      status: Downloading
+      excluded_categories:
+        - MySaved
+      remove: download_speed &gt; 40000 and upload_speed &lt; 25000 
+    clean_by_speed_S2:
+      status: Downloading
+      excluded_categories:
+        - MySaved
+      remove: download_speed &gt; 20000 and upload_speed &lt; 15000 
+    clean_by_speed_S3:
+      status: Downloading
+      excluded_categories:
+        - MySaved
+      remove: download_speed &gt; 60000 and upload_speed &lt; 45000 
+    clean_HR_XXX_strategy:
+      categories:
+        - XXX
+      status:
+        - Uploading
+      remove: seeding_time &gt; 504000 and average_uploadspeed &lt; 400 
+    limit_max_torrents:
+      status:
+        - downloading
+      excluded_categories:
+        - MySaved
+      maximum_number: 
+        limit: 16
+        action: remove-inactive-seeds
+  delete_data: true
+</code></pre>
+<h2 id="查看流量统计-vnstat">查看流量统计 Vnstat</h2>
+<h3 id="安装vnstat">安装Vnstat</h3>
+<pre><code>sudo apt-get install vnstat #安装脚本
+systemctl status vnstat #查看是否运行
+ls /var/lib/vnstat/ #查看监控网口
+
+vnstat -i enp2s0 -l #view live traffic, enp2s0为上面命令得到的监控网口
+vnstat -h #查看过去24小时的流量
+vnstat -d #查看过去30天的流量
+vnstat -m #查看每个月的流量
+vnstat -t #查看top10天的流量
+</code></pre>
+<figure data-type="image" tabindex="25"><img src="https://image.cubox.pro/article/2022051109472159448/91482.jpg" alt="" loading="lazy"></figure>
+<p>vnstat -h，因为是09h才安装的所以从10h时看才算正常， 06h还没跑完，流量统计不准</p>
+<p>文章到这里就结束了，就像开头所说这只是提供一种刷流的思路。有兴趣的PT友也可以了解下Vertex，可以集中管理RSS跟删种，免除了Flexget跟Auto-remove torrents 至于R种，如果不想写config.yml也可以多开pt助手来实现同样的功能。</p>
+<p>最后善意提醒各位PT友，请注意各站HR要求跟对seedbox的单独要求，以免被ban。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="https://link.zhihu.com/?target=https%3A//cn.wiki.ptbox.dev/hetzner-onekey/">https://cn.wiki.ptbox.dev/hetzner-onekey/</a> Debian 10一键脚本</li>
+<li><a href="https://link.zhihu.com/?target=https%3A//blog.xiaocai.win/2020/02/07/screen.html">https://blog.xiaocai.win/2020/02/07/screen.html</a> screen的介绍及使用</li>
+<li><a href="https://link.zhihu.com/?target=https%3A//github.com/jerry048/Dedicated-Seedbox/blob/main/README-zh.md">https://github.com/jerry048/Dedicated-Seedbox/blob/main/README-zh.md</a> 杰佬的脚本</li>
+<li><a href="https://link.zhihu.com/?target=https%3A//flexget.com/Configuration">FlexGet</a> 官网configuration介绍</li>
+<li><a href="https://link.zhihu.com/?target=https%3A//sunpma.com/912.htmlsunpma.com/912.html">https://sunpma.com/912.htmlsunpma.com/912.html</a> Flexget命令原文链接</li>
+</ul>
+<p><a href="https://zhuanlan.zhihu.com/p/479886858">查看原网页: zhuanlan.zhihu.com</a></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E9%80%82%E5%90%88%E5%B0%8F%E7%99%BD%E7%9A%84pt%E7%9B%92%E5%AD%90%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97">适合小白的PT盒子入门指南</a>
+<ul>
+<li><a href="#%E5%85%B3%E4%BA%8Ept%E7%9B%92%E5%AD%90seedbox">关于PT盒子/seedbox</a>
+<ul>
+<li><a href="#%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B%E5%B7%B2%E6%9B%B4%E6%96%B0%E5%8F%AF%E7%A7%BB%E6%AD%A5"><strong><em>视频教程已更新，可移步</em></strong></a></li>
+<li><a href="#%E7%9B%92%E5%AD%90%E8%B4%AD%E4%B9%B0">盒子购买</a></li>
+</ul>
+</li>
+<li><a href="#%E7%9B%92%E5%AD%90%E7%B3%BB%E7%BB%9F%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85%E5%8F%8A%E4%B8%80%E9%94%AE%E4%BC%98%E5%8C%96">盒子系统一键安装及一键优化</a>
+<ul>
+<li><a href="#%E7%A8%8D%E5%90%8E%E7%94%A8%E5%88%B0%E7%9A%84%E5%B7%A5%E5%85%B7%E5%8F%8A%E5%A4%A7%E4%BD%AC%E8%84%9A%E6%9C%AC">稍后用到的工具及大佬脚本</a></li>
+</ul>
+</li>
+<li><a href="#%E6%89%8B%E6%8A%8A%E6%89%8B%E6%8C%87%E5%8D%97">手把手指南</a>
+<ul>
+<li><a href="#%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85debian-10"><strong>一键安装Debian 10</strong></a></li>
+<li><a href="#%E5%AE%89%E8%A3%85%E6%9D%B0%E4%BD%AC%E4%B8%80%E9%94%AE%E8%84%9A%E6%9C%AC"><strong>安装杰佬一键脚本</strong></a></li>
+</ul>
+</li>
+<li><a href="#flexget%E9%85%8D%E7%BD%AE">Flexget配置</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85flexget">安装flexget</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AEflexget%E7%9B%AE%E5%BD%95%E5%8F%8Aconfig%E6%96%87%E4%BB%B6">配置Flexget目录及config文件</a></li>
+<li><a href="#config%E6%96%87%E4%BB%B6%E6%A0%B7%E6%9C%AC">Config文件样本</a></li>
+<li><a href="#flexget%E5%85%B6%E4%BB%96%E6%8C%87%E4%BB%A4">flexget其他指令</a></li>
+</ul>
+</li>
+<li><a href="#art-%E9%85%8D%E7%BD%AE">ART 配置</a>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BAconfigyml%E5%8F%8Alogs%E7%9B%AE%E5%BD%95">创建config.yml及logs目录</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E8%BF%90%E8%A1%8C">测试运行</a></li>
+<li><a href="#%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%98%8E">一些说明</a></li>
+<li><a href="#%E7%BC%96%E8%BE%91%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1crontab-e">编辑定时任务crontab -e</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E8%BF%90%E8%A1%8C">查看是否运行</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%A0%E7%A7%8D%E7%AD%96%E7%95%A5">删种策略</a>
+<ul>
+<li><a href="#autoremove-torrents-%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3">Autoremove torrents 官方文档：</a></li>
+<li><a href="#%E9%BB%91%E8%BD%A6">黑车</a></li>
+<li><a href="#%E6%85%A2%E8%BD%A6">慢车</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E5%AE%8C%E6%88%90%E7%9A%84%E7%A7%8D%E5%AD%90">删除完成的种子</a></li>
+<li><a href="#%E8%B6%85%E6%97%B6%E4%B8%8B%E8%BD%BD">超时下载</a></li>
+<li><a href="#hr-%E5%88%A0%E7%A7%8D">HR 删种</a></li>
+<li><a href="#%E9%99%90%E5%88%B6%E6%9C%80%E5%A4%A7%E4%B8%8B%E8%BD%BD%E6%95%B0">限制最大下载数</a></li>
+<li><a href="#%E5%85%B6%E4%BB%96%E7%AD%96%E7%95%A5">其他策略</a></li>
+<li><a href="#%E6%A0%B7%E6%9C%AC">样本</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E6%B5%81%E9%87%8F%E7%BB%9F%E8%AE%A1-vnstat">查看流量统计 Vnstat</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85vnstat">安装Vnstat</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://sexyfeifan.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+<div id="waline"></div>
+  <script>
+    Waline.init({
+      el: '#waline',
+      serverURL: 'https://waline-f1p7gctpb-sexyfeifan.vercel.app/',
+    });
+  </script>
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
