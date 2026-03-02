@@ -9,6 +9,5 @@ struct HugoDeskApp: App {
             RootView(viewModel: viewModel)
                 .frame(minWidth: 1200, minHeight: 760)
         }
-        .windowResizability(.contentSize)
     }
 }

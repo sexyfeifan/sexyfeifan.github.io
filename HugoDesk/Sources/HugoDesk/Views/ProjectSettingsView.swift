@@ -73,6 +73,49 @@ struct ProjectSettingsView: View {
                     }
                 }
 
+                ModernCard(title: "远程地址与凭据", subtitle: "自动读取并保存（不写入博客目录）") {
+                    VStack(spacing: 10) {
+                        SettingRow(
+                            key: "profile.remoteURL",
+                            title: "推送仓库地址",
+                            helpText: "例如 https://github.com/you/you.github.io.git。用于推送与 Actions 查询。",
+                            scope: "发布流程"
+                        ) {
+                            TextField("https://github.com/you/repo.git", text: $viewModel.publishRemoteURL)
+                                .textFieldStyle(.roundedBorder)
+                        }
+
+                        SettingRow(
+                            key: "profile.workflowName",
+                            title: "Workflow 名称",
+                            helpText: "用于匹配要显示状态的 GitHub Actions workflow。",
+                            scope: "状态查询"
+                        ) {
+                            TextField("Deploy Hugo site to Pages", text: $viewModel.workflowName)
+                                .textFieldStyle(.roundedBorder)
+                        }
+
+                        SettingRow(
+                            key: "keychain.githubToken",
+                            title: "GitHub Token",
+                            helpText: "仅保存在系统钥匙串；不会写入项目目录，也不会被 git 推送。",
+                            scope: "状态查询"
+                        ) {
+                            SecureField("ghp_xxx", text: $viewModel.githubToken)
+                                .textFieldStyle(.roundedBorder)
+                        }
+
+                        HStack {
+                            Button("保存远程与令牌") {
+                                viewModel.saveRemoteProfile()
+                            }
+                            Text("配置文件保存在 ~/Library/Application Support/HugoDesk/profiles，令牌保存在 Keychain。")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
                 ModernCard(title: "快捷操作") {
                     HStack {
                         Button("重新加载项目") {

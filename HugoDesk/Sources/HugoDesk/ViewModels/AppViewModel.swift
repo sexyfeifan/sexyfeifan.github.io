@@ -13,12 +13,19 @@ final class AppViewModel: ObservableObject {
 
     @Published var publishLog: String = ""
     @Published var publishMessage: String = "chore: 发布博客更新"
+    @Published var publishRemoteURL: String = ""
+    @Published var githubToken: String = ""
+    @Published var workflowName: String = "Deploy Hugo site to Pages"
+    @Published var latestWorkflowStatus: WorkflowRunStatus?
+    @Published var latestWorkflowError: String = ""
     @Published var isBusy: Bool = false
     @Published var statusText: String = ""
 
     private let configService = ConfigService()
     private let postService = PostService()
     private let publishService = PublishService()
+    private let actionsService = GitHubActionsService()
+    private let credentialStore = CredentialStore()
 
     init() {
         let project = BlogProject.bootstrap()
@@ -31,6 +38,7 @@ final class AppViewModel: ObservableObject {
         do {
             config = try configService.loadConfig(for: project)
             posts = try postService.loadPosts(for: project)
+            loadRemoteProfile()
             if let first = posts.first {
                 selectedPostID = first.id
                 editorPost = first
@@ -38,6 +46,20 @@ final class AppViewModel: ObservableObject {
                 editorPost = BlogPost.empty(in: project.contentURL)
             }
             statusText = "项目已加载。"
+        } catch {
+            statusText = error.localizedDescription
+        }
+    }
+
+    func saveRemoteProfile() {
+        do {
+            let profile = RemoteProfile(
+                remoteURL: publishRemoteURL.trimmingCharacters(in: .whitespacesAndNewlines),
+                workflowName: workflowName.trimmingCharacters(in: .whitespacesAndNewlines)
+            )
+            try credentialStore.saveRemoteProfile(profile, for: project.rootPath)
+            credentialStore.saveToken(githubToken, for: project.rootPath)
+            statusText = "远程与令牌设置已保存。"
         } catch {
             statusText = error.localizedDescription
         }
@@ -97,9 +119,27 @@ final class AppViewModel: ObservableObject {
 
     func runPublish() {
         runTask {
-            let output = try self.publishService.commitAndPush(project: self.project, message: self.publishMessage)
+            let output = try self.publishService.commitAndPush(
+                project: self.project,
+                message: self.publishMessage,
+                remoteURL: self.publishRemoteURL
+            )
             self.publishLog = output
             self.statusText = "推送完成。"
+        }
+    }
+
+    func refreshActionsStatus() {
+        runAsyncTask {
+            self.latestWorkflowError = ""
+            self.latestWorkflowStatus = nil
+            let run = try await self.actionsService.fetchLatestRun(
+                remoteURL: self.publishRemoteURL,
+                token: self.githubToken,
+                workflowName: self.workflowName
+            )
+            self.latestWorkflowStatus = run
+            self.statusText = "已获取最新 Actions 状态。"
         }
     }
 
@@ -113,6 +153,30 @@ final class AppViewModel: ObservableObject {
                 statusText = error.localizedDescription
             }
         }
+    }
+
+    private func runAsyncTask(_ action: @escaping () async throws -> Void) {
+        isBusy = true
+        Task {
+            defer { isBusy = false }
+            do {
+                try await action()
+            } catch {
+                latestWorkflowError = error.localizedDescription
+                statusText = error.localizedDescription
+            }
+        }
+    }
+
+    private func loadRemoteProfile() {
+        if let profile = credentialStore.loadRemoteProfile(for: project.rootPath) {
+            publishRemoteURL = profile.remoteURL
+            workflowName = profile.workflowName.isEmpty ? "Deploy Hugo site to Pages" : profile.workflowName
+        } else {
+            publishRemoteURL = publishService.detectRemoteURL(project: project)
+            workflowName = "Deploy Hugo site to Pages"
+        }
+        githubToken = credentialStore.loadToken(for: project.rootPath)
     }
 }
 

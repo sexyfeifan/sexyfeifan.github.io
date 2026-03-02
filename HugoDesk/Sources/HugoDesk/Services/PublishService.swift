@@ -21,8 +21,15 @@ final class PublishService {
         return result.output
     }
 
-    func commitAndPush(project: BlogProject, message: String) throws -> String {
+    func commitAndPush(project: BlogProject, message: String, remoteURL: String) throws -> String {
         var logs: [String] = []
+
+        if !remoteURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            let setRemoteResult = ensureRemoteURL(project: project, remoteURL: remoteURL)
+            if !setRemoteResult.isEmpty {
+                logs.append(setRemoteResult)
+            }
+        }
 
         let add = try runner.run(command: "git", arguments: ["add", "."], in: project.rootURL)
         if !add.output.isEmpty {
@@ -52,5 +59,45 @@ final class PublishService {
         }
 
         return logs.joined(separator: "\n")
+    }
+
+    func detectRemoteURL(project: BlogProject) -> String {
+        do {
+            let result = try runner.run(
+                command: "git",
+                arguments: ["remote", "get-url", project.gitRemote],
+                in: project.rootURL
+            )
+            return result.output.trimmingCharacters(in: .whitespacesAndNewlines)
+        } catch {
+            return ""
+        }
+    }
+
+    private func ensureRemoteURL(project: BlogProject, remoteURL: String) -> String {
+        do {
+            let _ = try runner.run(
+                command: "git",
+                arguments: ["remote", "get-url", project.gitRemote],
+                in: project.rootURL
+            )
+            let result = try runner.run(
+                command: "git",
+                arguments: ["remote", "set-url", project.gitRemote, remoteURL],
+                in: project.rootURL
+            )
+            return result.output
+        } catch {
+            do {
+                let result = try runner.run(
+                    command: "git",
+                    arguments: ["remote", "add", project.gitRemote, remoteURL],
+                    in: project.rootURL
+                )
+                return result.output
+            } catch {
+                return ""
+            }
+        }
     }
 }
