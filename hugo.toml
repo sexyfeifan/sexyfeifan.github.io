@@ -1,0 +1,14 @@
+baseURL = "https://example.org/"
+languageCode = "zh-cn"
+title = "My Blog"
+theme = "github-style"
+
+[params]
+  author = ""
+  description = ""
+  rss = true
+  lastmod = true
+  enableSearch = true
+
+[frontmatter]
+  lastmod = ["lastmod", ":fileModTime", ":default"]
