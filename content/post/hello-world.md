@@ -1,12 +1,9 @@
 +++
-title = "Hello World"
-date = 2026-03-03T02:40:00+08:00
+title = "测试一个软件"
+date = 2026-03-02T18:40:00Z
 draft = false
-summary = "博客已上线，第一篇文章。"
+summary = "看到就是成功"
+pin = true
 +++
 
-博客初始化完成。
-
-- 主题：github-style
-- 部署：GitHub Pages + GitHub Actions
-- 下一步：开始持续写作
+YYDS
