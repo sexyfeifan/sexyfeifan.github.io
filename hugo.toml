@@ -1,11 +1,11 @@
-baseURL = "https://example.org/"
+baseURL = "https://sexyfeifan.github.io/"
 languageCode = "zh-cn"
-title = "My Blog"
+title = "sexyfeifan Blog"
 theme = "github-style"
 
 [params]
-  author = ""
-  description = ""
+  author = "sexyfeifan"
+  description = "A Hugo blog powered by github-style theme."
   rss = true
   lastmod = true
   enableSearch = true
