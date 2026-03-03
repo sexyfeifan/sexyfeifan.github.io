@@ -19,7 +19,7 @@ struct RootView: View {
             VStack(spacing: 0) {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("HugoDesk")
+                        Text("HugoDesk v\(AppVersion.current)")
                             .font(.system(size: 22, weight: .bold, design: .rounded))
                         Text(viewModel.project.rootPath)
                             .font(.caption)
@@ -54,6 +54,11 @@ struct RootView: View {
                             Label("主题设置", systemImage: "slider.horizontal.3")
                         }
 
+                    AISettingsView(viewModel: viewModel)
+                        .tabItem {
+                            Label("AI 设置", systemImage: "sparkles")
+                        }
+
                     PublishView(viewModel: viewModel)
                         .tabItem {
                             Label("发布", systemImage: "icloud.and.arrow.up")
@@ -67,6 +72,9 @@ struct RootView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                     Spacer()
+                    Text("v\(AppVersion.current)")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                     if viewModel.isBusy {
                         ProgressView()
                             .controlSize(.small)

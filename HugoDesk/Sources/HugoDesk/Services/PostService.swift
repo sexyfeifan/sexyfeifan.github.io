@@ -62,6 +62,55 @@ final class PostService {
         "\(slugify(title.isEmpty ? "new-post" : title)).md"
     }
 
+    func suggestTitle(fromFileName fileName: String) -> String {
+        let base = fileName
+            .replacingOccurrences(of: ".md", with: "", options: [.caseInsensitive])
+            .replacingOccurrences(of: "_", with: " ")
+            .replacingOccurrences(of: "-", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if base.isEmpty {
+            return "未命名文章"
+        }
+        return base
+    }
+
+    func suggestSummary(fromMarkdown markdown: String, maxLength: Int = 140) -> String {
+        let noCode = markdown.replacingOccurrences(
+            of: #"```[\s\S]*?```"#,
+            with: " ",
+            options: .regularExpression
+        )
+        let noImages = noCode.replacingOccurrences(
+            of: #"\!\[[^\]]*\]\([^)]+\)"#,
+            with: " ",
+            options: .regularExpression
+        )
+        let noLinks = noImages.replacingOccurrences(
+            of: #"\[([^\]]+)\]\([^)]+\)"#,
+            with: "$1",
+            options: .regularExpression
+        )
+        let stripped = noLinks
+            .replacingOccurrences(of: #"(^|\n)\s{0,3}#{1,6}\s*"#, with: "$1", options: .regularExpression)
+            .replacingOccurrences(of: #"[>*_`~]"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"\n{2,}"#, with: "\n\n", options: .regularExpression)
+
+        let paragraphs = stripped
+            .components(separatedBy: "\n\n")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+
+        let source = paragraphs.first ?? stripped.trimmingCharacters(in: .whitespacesAndNewlines)
+        if source.isEmpty {
+            return ""
+        }
+
+        if source.count <= maxLength {
+            return source
+        }
+        return String(source.prefix(maxLength)) + "..."
+    }
+
     func createNewPost(title: String, fileName: String?, in project: BlogProject) -> BlogPost {
         let desired = sanitizeFileName(fileName ?? "", fallbackTitle: title)
         let target = uniqueFileURL(in: project.contentURL, baseName: desired)
@@ -77,6 +126,12 @@ final class PostService {
         try FileManager.default.createDirectory(at: post.fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
         let raw = renderPost(post)
         try raw.write(to: post.fileURL, atomically: true, encoding: .utf8)
+    }
+
+    func deletePost(at fileURL: URL) throws {
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            try FileManager.default.removeItem(at: fileURL)
+        }
     }
 
     private func splitFrontMatter(from raw: String) -> (String, String) {

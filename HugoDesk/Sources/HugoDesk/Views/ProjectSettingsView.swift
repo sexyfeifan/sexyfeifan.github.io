@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct ProjectSettingsView: View {
     @ObservedObject var viewModel: AppViewModel
@@ -73,7 +74,7 @@ struct ProjectSettingsView: View {
                     }
                 }
 
-                ModernCard(title: "远程地址与凭据", subtitle: "自动读取并保存（不写入博客目录）") {
+                ModernCard(title: "远程地址与凭据", subtitle: "自动读取并保存（同步到项目配置包）") {
                     VStack(spacing: 10) {
                         SettingRow(
                             key: "profile.remoteURL",
@@ -98,7 +99,7 @@ struct ProjectSettingsView: View {
                         SettingRow(
                             key: "keychain.githubToken",
                             title: "GitHub Token",
-                            helpText: "仅保存在系统钥匙串；不会写入项目目录，也不会被 git 推送。",
+                            helpText: "写入项目配置包并同步到系统钥匙串；项目配置包默认加入 .gitignore。",
                             scope: "状态查询"
                         ) {
                             SecureField("ghp_xxx", text: $viewModel.githubToken)
@@ -109,7 +110,7 @@ struct ProjectSettingsView: View {
                             Button("保存远程与令牌") {
                                 viewModel.saveRemoteProfile()
                             }
-                            Text("配置文件保存在 ~/Library/Application Support/HugoDesk/profiles，令牌保存在 Keychain。")
+                            Text("配置会同步到项目根目录 .hugodesk.local.json，并写入系统 Keychain 作为兼容备份。")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -121,12 +122,49 @@ struct ProjectSettingsView: View {
                         Button("重新加载项目") {
                             viewModel.loadAll()
                         }
+                        Button("保存项目配置包") {
+                            viewModel.exportConfigBundleToProject()
+                        }
                         Button("保存主题配置") {
                             viewModel.saveThemeConfig()
                         }
                         Button("构建站点") {
                             viewModel.runBuild()
                         }
+                    }
+                }
+
+                ModernCard(title: "项目配置包", subtitle: "固定保存在博客根目录，自动加载，不会被 Git 上传") {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(viewModel.localConfigBundlePath)
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                        HStack {
+                            Button("一键导出到项目目录") {
+                                viewModel.exportConfigBundleToProject()
+                            }
+                            Button("一键从项目目录还原") {
+                                viewModel.importConfigBundleFromProject()
+                            }
+                            Spacer()
+                        }
+                        HStack {
+                            Button("另存为外部备份文件") {
+                                if let target = pickBackupSaveURL() {
+                                    viewModel.exportConfigBundle(to: target)
+                                }
+                            }
+                            Button("从外部备份文件还原") {
+                                if let source = pickBackupFileURL() {
+                                    viewModel.importConfigBundle(from: source)
+                                }
+                            }
+                            Spacer()
+                        }
+                        Text("配置包包含项目设置、主题配置、远程信息、GitHub Token、AI API 信息。切换博客目录时会自动尝试读取该文件。")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
             }
@@ -141,5 +179,24 @@ struct ProjectSettingsView: View {
         panel.allowsMultipleSelection = false
         panel.prompt = "选择"
         return panel.runModal() == .OK ? panel.url?.path : nil
+    }
+
+    private func pickBackupSaveURL() -> URL? {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.json]
+        panel.nameFieldStringValue = "hugodesk-config-backup.json"
+        panel.prompt = "导出"
+        panel.canCreateDirectories = true
+        return panel.runModal() == .OK ? panel.url : nil
+    }
+
+    private func pickBackupFileURL() -> URL? {
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowsMultipleSelection = false
+        panel.allowedContentTypes = [.json]
+        panel.prompt = "导入"
+        return panel.runModal() == .OK ? panel.url : nil
     }
 }

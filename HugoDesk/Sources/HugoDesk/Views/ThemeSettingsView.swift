@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct ThemeSettingsView: View {
@@ -89,13 +90,34 @@ struct ThemeSettingsView: View {
                             TextField("", text: $viewModel.config.params.userStatusEmoji).textFieldStyle(.roundedBorder)
                         }
                         SettingRow(key: "params.avatar", title: "头像路径", helpText: "作者头像图片路径。", scope: "首页/文章/SEO") {
-                            TextField("/images/avatar.png", text: $viewModel.config.params.avatar).textFieldStyle(.roundedBorder)
+                            HStack {
+                                TextField("/images/avatar.png", text: $viewModel.config.params.avatar).textFieldStyle(.roundedBorder)
+                                Button("上传") {
+                                    if let image = pickImage() {
+                                        viewModel.importThemeImage(from: image, field: .avatar)
+                                    }
+                                }
+                            }
                         }
                         SettingRow(key: "params.headerIcon", title: "顶部图标", helpText: "顶部导航中的站点图标。", scope: "导航") {
-                            TextField("/images/github-mark-white.png", text: $viewModel.config.params.headerIcon).textFieldStyle(.roundedBorder)
+                            HStack {
+                                TextField("/images/github-mark-white.png", text: $viewModel.config.params.headerIcon).textFieldStyle(.roundedBorder)
+                                Button("上传") {
+                                    if let image = pickImage() {
+                                        viewModel.importThemeImage(from: image, field: .headerIcon)
+                                    }
+                                }
+                            }
                         }
                         SettingRow(key: "params.favicon", title: "网站图标", helpText: "浏览器标签页 favicon。", scope: "全站") {
-                            TextField("/images/favicon.ico", text: $viewModel.config.params.favicon).textFieldStyle(.roundedBorder)
+                            HStack {
+                                TextField("/images/favicon.ico", text: $viewModel.config.params.favicon).textFieldStyle(.roundedBorder)
+                                Button("上传") {
+                                    if let image = pickImage() {
+                                        viewModel.importThemeImage(from: image, field: .favicon)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -294,5 +316,15 @@ struct ThemeSettingsView: View {
         input.components(separatedBy: .newlines)
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
+    }
+
+    private func pickImage() -> URL? {
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowsMultipleSelection = false
+        panel.allowedContentTypes = [.png, .jpeg, .gif, .heic, .tiff, .webP]
+        panel.prompt = "选择"
+        return panel.runModal() == .OK ? panel.url : nil
     }
 }

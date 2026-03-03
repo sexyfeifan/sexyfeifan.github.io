@@ -1,6 +1,6 @@
 import Foundation
 
-struct BlogProject {
+struct BlogProject: Codable {
     var rootPath: String
     var hugoExecutable: String
     var contentSubpath: String
@@ -34,5 +34,13 @@ struct BlogProject {
 
     var configURL: URL {
         rootURL.appendingPathComponent("hugo.toml")
+    }
+
+    var staticImagesURL: URL {
+        rootURL.appendingPathComponent("static/images", isDirectory: true)
+    }
+
+    var localConfigBundleURL: URL {
+        rootURL.appendingPathComponent(".hugodesk.local.json", isDirectory: false)
     }
 }

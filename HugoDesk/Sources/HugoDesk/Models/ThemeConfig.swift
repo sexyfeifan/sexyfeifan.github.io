@@ -1,6 +1,6 @@
 import Foundation
 
-struct ThemeConfig {
+struct ThemeConfig: Codable {
     var baseURL: String = "https://example.com/"
     var languageCode: String = "zh-cn"
     var title: String = "My Hugo Blog"
@@ -16,7 +16,7 @@ struct ThemeConfig {
     var outputFormatJSONIsPlainText: Bool = false
 }
 
-struct ThemeParams {
+struct ThemeParams: Codable {
     var author: String = ""
     var description: String = ""
     var tagline: String = ""
@@ -51,7 +51,7 @@ struct ThemeParams {
     var links: [ThemeLink] = []
 }
 
-struct GitalkSettings {
+struct GitalkSettings: Codable {
     var clientID: String = ""
     var clientSecret: String = ""
     var repo: String = ""
@@ -66,7 +66,7 @@ struct GitalkSettings {
     var proxy: String = ""
 }
 
-struct ThemeLink: Identifiable {
+struct ThemeLink: Identifiable, Codable {
     var id: UUID = UUID()
     var title: String = ""
     var href: String = ""
