@@ -24,6 +24,8 @@ swift run
 
 ## Credential storage
 
-- Remote profile metadata path: `~/Library/Application Support/HugoDesk/profiles/*.json`
-- GitHub token path: macOS Keychain (service: `com.hugodesk.github.token`)
-- Nothing is written into the blog repo for token/profile metadata.
+- Project local config bundle: `<blog-root>/.hugodesk.local.json` (remote profile, tokens, AI settings, project settings, theme snapshot)
+- Backup for packaging artifacts: `HugoDesk/backups/<version>/` (source + install package)
+- Legacy compatibility storage still available:
+  - `~/Library/Application Support/HugoDesk/profiles/*.json`
+  - macOS Keychain (`com.hugodesk.github.token`, `com.hugodesk.ai.api-key`)
