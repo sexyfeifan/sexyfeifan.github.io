@@ -4,10 +4,39 @@ struct PublishView: View {
     @ObservedObject var viewModel: AppViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                ModernCard(title: "发布前检查", subtitle: "我加的能力：先检查再发布，减少失败率") {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(viewModel.preflightChecks()) { check in
+                            HStack(alignment: .top, spacing: 8) {
+                                Image(systemName: iconName(for: check.level))
+                                    .foregroundStyle(color(for: check.level))
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(check.title)
+                                        .font(.subheadline.weight(.semibold))
+                                    Text(check.detail)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                    }
+                }
+
             ModernCard(title: "GitHub Actions 状态", subtitle: "显示最新 workflow 运行结果") {
                 VStack(alignment: .leading, spacing: 10) {
+                    TextField("仓库地址（https://github.com/owner/repo.git）", text: $viewModel.publishRemoteURL)
+                        .textFieldStyle(.roundedBorder)
+                    TextField("Workflow 名称（可留空）", text: $viewModel.workflowName)
+                        .textFieldStyle(.roundedBorder)
+                    SecureField("GitHub Token（可选，推荐）", text: $viewModel.githubToken)
+                        .textFieldStyle(.roundedBorder)
+
                     HStack {
+                        Button("保存查询配置") {
+                            viewModel.saveRemoteProfile()
+                        }
                         Button("查询最新状态") {
                             viewModel.refreshActionsStatus()
                         }
@@ -51,6 +80,11 @@ struct PublishView: View {
                                     .foregroundStyle(.secondary)
                                 Text(run.updatedAt)
                             }
+                        }
+                        if let note = run.note, !note.isEmpty {
+                            Text(note)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                         Link("打开运行详情", destination: URL(string: run.htmlURL)!)
                     } else if !viewModel.latestWorkflowError.isEmpty {
@@ -97,8 +131,9 @@ struct PublishView: View {
             Text("应用会在当前项目目录执行本机的 git/hugo 命令。")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+            }
+            .padding()
         }
-        .padding()
     }
 
     private func statusColor(for run: WorkflowRunStatus) -> Color {
@@ -106,5 +141,21 @@ struct PublishView: View {
         if run.conclusion == "failure" || run.conclusion == "cancelled" { return .red }
         if run.status == "in_progress" || run.status == "queued" { return .orange }
         return .secondary
+    }
+
+    private func iconName(for level: PublishCheck.Level) -> String {
+        switch level {
+        case .ok: return "checkmark.circle.fill"
+        case .warning: return "exclamationmark.triangle.fill"
+        case .error: return "xmark.octagon.fill"
+        }
+    }
+
+    private func color(for level: PublishCheck.Level) -> Color {
+        switch level {
+        case .ok: return .green
+        case .warning: return .orange
+        case .error: return .red
+        }
     }
 }

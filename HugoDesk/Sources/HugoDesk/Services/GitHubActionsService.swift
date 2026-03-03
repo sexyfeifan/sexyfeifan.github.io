@@ -2,16 +2,19 @@ import Foundation
 
 enum GitHubActionsError: LocalizedError {
     case invalidRepositoryURL
-    case workflowNotFound
+    case noRunsFound
     case httpError(Int, String)
 
     var errorDescription: String? {
         switch self {
         case .invalidRepositoryURL:
             return "无法解析 GitHub 仓库地址。"
-        case .workflowNotFound:
-            return "未找到匹配的 workflow 运行记录。"
+        case .noRunsFound:
+            return "该仓库还没有任何 workflow 运行记录。"
         case let .httpError(code, body):
+            if code == 401 || code == 403 {
+                return "GitHub API 鉴权失败（HTTP \(code)）。请检查 Token 权限（建议包含 repo/read:org/workflow 至少可读 workflow）。"
+            }
             return "GitHub API 请求失败：HTTP \(code)\n\(body)"
         }
     }
@@ -43,16 +46,21 @@ struct GitHubActionsService: Sendable {
 
         let decoded = try JSONDecoder().decode(WorkflowRunsResponse.self, from: data)
         let picked: WorkflowRunItem?
+        var note: String?
         if workflowName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             picked = decoded.workflowRuns.first
         } else {
             picked = decoded.workflowRuns.first {
                 $0.name.localizedCaseInsensitiveContains(workflowName)
             }
+            if picked == nil {
+                note = "未匹配到指定 workflow，已回退为最新运行记录。"
+            }
         }
 
-        guard let run = picked else {
-            throw GitHubActionsError.workflowNotFound
+        let finalRun = picked ?? decoded.workflowRuns.first
+        guard let run = finalRun else {
+            throw GitHubActionsError.noRunsFound
         }
 
         return WorkflowRunStatus(
@@ -63,7 +71,8 @@ struct GitHubActionsService: Sendable {
             createdAt: run.createdAt,
             updatedAt: run.updatedAt,
             branch: run.headBranch,
-            sha: run.headSHA
+            sha: run.headSHA,
+            note: note
         )
     }
 

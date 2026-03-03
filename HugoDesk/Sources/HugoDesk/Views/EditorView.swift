@@ -23,9 +23,9 @@ struct EditorView: View {
             }
             .navigationTitle("文章")
             .toolbar {
-                Button("新建文章") {
-                    viewModel.createNewPost()
-                    refreshInputsFromPost()
+                Button("快速新建") {
+                    viewModel.newPostTitle = ""
+                    viewModel.newPostFileName = "new-post.md"
                 }
             }
             .onChange(of: viewModel.selectedPostID) { _ in
@@ -34,6 +34,32 @@ struct EditorView: View {
             }
         } detail: {
             VStack(spacing: 14) {
+                ModernCard(title: "新建文章", subtitle: "支持自定义文件名（默认拼音 slug）") {
+                    VStack(spacing: 10) {
+                        HStack {
+                            TextField("文章标题（例如：你好世界）", text: $viewModel.newPostTitle)
+                                .textFieldStyle(.roundedBorder)
+                                .onChange(of: viewModel.newPostTitle) { _ in
+                                    viewModel.updateSuggestedFileName()
+                                }
+                            Button("按标题生成文件名") {
+                                viewModel.updateSuggestedFileName()
+                            }
+                        }
+                        HStack {
+                            TextField("文件名（例如：hello-world.md）", text: $viewModel.newPostFileName)
+                                .textFieldStyle(.roundedBorder)
+                            Button("创建文章") {
+                                viewModel.createPostFromForm()
+                                refreshInputsFromPost()
+                            }
+                        }
+                        Text("建议文件名使用英文或拼音并用 - 连接。若重名会自动追加序号。")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
                 ModernCard(title: "文章元数据", subtitle: "Front Matter") {
                     VStack(spacing: 10) {
                         HStack {

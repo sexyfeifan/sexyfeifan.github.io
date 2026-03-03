@@ -14,6 +14,7 @@ struct WorkflowRunStatus {
     var updatedAt: String
     var branch: String
     var sha: String
+    var note: String?
 
     var statusText: String {
         if let conclusion, !conclusion.isEmpty {

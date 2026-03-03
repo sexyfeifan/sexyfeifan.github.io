@@ -10,6 +10,8 @@ final class AppViewModel: ObservableObject {
     @Published var selectedPostID: String?
     @Published var editorPost: BlogPost
     @Published var editorMode: EditorMode = .markdown
+    @Published var newPostTitle: String = ""
+    @Published var newPostFileName: String = "new-post.md"
 
     @Published var publishLog: String = ""
     @Published var publishMessage: String = "chore: 发布博客更新"
@@ -31,6 +33,8 @@ final class AppViewModel: ObservableObject {
         let project = BlogProject.bootstrap()
         self.project = project
         self.editorPost = BlogPost.empty(in: project.contentURL)
+        self.newPostTitle = ""
+        self.newPostFileName = "new-post.md"
         loadAll()
     }
 
@@ -76,9 +80,22 @@ final class AppViewModel: ObservableObject {
     }
 
     func createNewPost() {
-        editorPost = postService.createNewPost(title: "未命名文章", in: project)
+        editorPost = postService.createNewPost(title: "未命名文章", fileName: nil, in: project)
         selectedPostID = nil
         statusText = "已创建新草稿。"
+    }
+
+    func updateSuggestedFileName() {
+        newPostFileName = postService.suggestFileName(from: newPostTitle)
+    }
+
+    func createPostFromForm() {
+        let title = newPostTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        let finalTitle = title.isEmpty ? "未命名文章" : title
+        editorPost = postService.createNewPost(title: finalTitle, fileName: newPostFileName, in: project)
+        editorPost.body = ""
+        selectedPostID = nil
+        statusText = "已创建新文章：\(editorPost.fileName)"
     }
 
     func saveCurrentPost() {
@@ -177,6 +194,57 @@ final class AppViewModel: ObservableObject {
             workflowName = "Deploy Hugo site to Pages"
         }
         githubToken = credentialStore.loadToken(for: project.rootPath)
+    }
+
+    func preflightChecks() -> [PublishCheck] {
+        var checks: [PublishCheck] = []
+
+        let configExists = FileManager.default.fileExists(atPath: project.configURL.path)
+        checks.append(
+            PublishCheck(
+                title: "项目配置文件",
+                detail: configExists ? "已找到 hugo.toml。" : "未找到 hugo.toml，请确认项目目录。",
+                level: configExists ? .ok : .error
+            )
+        )
+
+        let remote = publishRemoteURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        checks.append(
+            PublishCheck(
+                title: "推送地址",
+                detail: remote.isEmpty ? "未配置远程仓库 URL。" : remote,
+                level: remote.isEmpty ? .error : .ok
+            )
+        )
+
+        let hasToken = !githubToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        checks.append(
+            PublishCheck(
+                title: "GitHub Token",
+                detail: hasToken ? "已配置（保存在系统钥匙串）。" : "未配置（公开仓库可不填，但可能受 API 限流）。",
+                level: hasToken ? .ok : .warning
+            )
+        )
+
+        let workflow = workflowName.trimmingCharacters(in: .whitespacesAndNewlines)
+        checks.append(
+            PublishCheck(
+                title: "Workflow 过滤名",
+                detail: workflow.isEmpty ? "空：将自动使用最新运行记录。" : workflow,
+                level: .ok
+            )
+        )
+
+        let postCount = posts.count
+        checks.append(
+            PublishCheck(
+                title: "文章数量",
+                detail: "当前检测到 \(postCount) 篇文章。",
+                level: postCount == 0 ? .warning : .ok
+            )
+        )
+
+        return checks
     }
 }
 

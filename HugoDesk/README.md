@@ -13,9 +13,11 @@ swift run
 
 - Project path and Hugo/Git publish settings
 - Markdown editor with live preview and front-matter controls
+- New post wizard with custom filename and automatic pinyin-style slug suggestion
 - Theme configuration panel for `github-style` (including Gitalk and output settings)
 - Build / Git status / Commit & Push actions
 - GitHub Actions latest workflow status query
+- Publish preflight checks (remote/token/workflow/content checks)
 
 ## Credential storage
 

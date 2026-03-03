@@ -15,7 +15,7 @@ struct ModernCard<Content: View>: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text(title)
-                    .font(.headline)
+                    .font(.system(.headline, design: .rounded))
                 if let subtitle {
                     Text(subtitle)
                         .font(.caption)
@@ -27,12 +27,26 @@ struct ModernCard<Content: View>: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(.regularMaterial)
+                .fill(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.9), Color.white.opacity(0.78)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
         )
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                .stroke(
+                    LinearGradient(
+                        colors: [Color.accentColor.opacity(0.35), Color.primary.opacity(0.1)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
         )
+        .shadow(color: Color.black.opacity(0.06), radius: 10, x: 0, y: 4)
     }
 }
 
@@ -91,7 +105,7 @@ struct SettingRow<Content: View>: View {
             .frame(maxWidth: .infinity, alignment: .leading)
 
             field
-                .frame(width: 360, alignment: .trailing)
+                .frame(width: 420, alignment: .trailing)
         }
     }
 }

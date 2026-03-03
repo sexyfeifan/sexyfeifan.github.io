@@ -1,4 +1,5 @@
 import Foundation
+import CoreFoundation
 
 final class PostService {
     func loadPosts(for project: BlogProject) throws -> [BlogPost] {
@@ -57,9 +58,13 @@ final class PostService {
         return post
     }
 
-    func createNewPost(title: String, in project: BlogProject) -> BlogPost {
-        let slug = slugify(title.isEmpty ? "new-post" : title)
-        let target = project.contentURL.appendingPathComponent("\(slug).md")
+    func suggestFileName(from title: String) -> String {
+        "\(slugify(title.isEmpty ? "new-post" : title)).md"
+    }
+
+    func createNewPost(title: String, fileName: String?, in project: BlogProject) -> BlogPost {
+        let desired = sanitizeFileName(fileName ?? "", fallbackTitle: title)
+        let target = uniqueFileURL(in: project.contentURL, baseName: desired)
         var post = BlogPost.empty(in: project.contentURL)
         post.fileURL = target
         post.title = title
@@ -182,8 +187,27 @@ final class PostService {
         "[" + values.map { encode($0) }.joined(separator: ", ") + "]"
     }
 
+    private func sanitizeFileName(_ raw: String, fallbackTitle: String) -> String {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        let noExt = trimmed.hasSuffix(".md") ? String(trimmed.dropLast(3)) : trimmed
+        let base = noExt.isEmpty ? slugify(fallbackTitle.isEmpty ? "new-post" : fallbackTitle) : slugify(noExt)
+        return base.isEmpty ? "post-\(Int(Date().timeIntervalSince1970))" : base
+    }
+
+    private func uniqueFileURL(in dir: URL, baseName: String) -> URL {
+        let fm = FileManager.default
+        var attempt = 1
+        var candidate = dir.appendingPathComponent("\(baseName).md")
+        while fm.fileExists(atPath: candidate.path) {
+            attempt += 1
+            candidate = dir.appendingPathComponent("\(baseName)-\(attempt).md")
+        }
+        return candidate
+    }
+
     private func slugify(_ source: String) -> String {
-        let lower = source.lowercased()
+        let pinyin = toPinyin(source)
+        let lower = pinyin.lowercased()
         let filtered = lower.map { char -> Character in
             if char.isLetter || char.isNumber {
                 return char
@@ -194,5 +218,12 @@ final class PostService {
             .replacingOccurrences(of: "-+", with: "-", options: .regularExpression)
             .trimmingCharacters(in: CharacterSet(charactersIn: "-"))
         return compact.isEmpty ? "post-\(Int(Date().timeIntervalSince1970))" : compact
+    }
+
+    private func toPinyin(_ source: String) -> String {
+        let mutable = NSMutableString(string: source) as CFMutableString
+        CFStringTransform(mutable, nil, kCFStringTransformToLatin, false)
+        CFStringTransform(mutable, nil, kCFStringTransformStripCombiningMarks, false)
+        return mutable as String
     }
 }

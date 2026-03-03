@@ -2,13 +2,63 @@ baseURL = "https://sexyfeifan.github.io/"
 languageCode = "zh-cn"
 title = "sexyfeifan Blog"
 theme = "github-style"
+pygmentsCodeFences = true
+pygmentsUseClasses = true
 
 [params]
   author = "sexyfeifan"
   description = "A Hugo blog powered by github-style theme."
+  tagline = ""
+  github = "sexyfeifan"
+  twitter = ""
+  facebook = ""
+  linkedin = ""
+  instagram = ""
+  tumblr = ""
+  stackoverflow = ""
+  bluesky = ""
+  email = ""
+  url = ""
+  keywords = ""
+  favicon = "/images/github-mark.png"
+  avatar = "/images/avatar.png"
+  headerIcon = "/images/github-mark-white.png"
+  location = ""
+  userStatusEmoji = ""
   rss = true
   lastmod = true
+  enableGitalk = false
   enableSearch = true
+  math = false
+  MathJax = false
+  custom_css = []
+  custom_js = []
+
+  [params.gitalk]
+    clientID = ""
+    clientSecret = ""
+    repo = ""
+    owner = ""
+    admin = ""
+    id = "location.pathname"
+    labels = "gitalk"
+    perPage = 15
+    pagerDirection = "last"
+    createIssueManually = true
+    distractionFreeMode = false
+    proxy = ""
 
 [frontmatter]
   lastmod = ["lastmod", ":fileModTime", ":default"]
+
+[services]
+  [services.googleAnalytics]
+    ID = ""
+
+[outputs]
+  home = ["html", "json"]
+
+[outputFormats.json]
+  mediaType = "application/json"
+  baseName = "index"
+  isPlainText = false
