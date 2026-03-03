@@ -1,16 +1,17 @@
-// swift-tools-version: 6.2
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
+// swift-tools-version: 5.9
 import PackageDescription
 
 let package = Package(
-    name: "HugoDesk",
+    name: "GitHubCollector",
     platforms: [
         .macOS(.v13)
     ],
+    products: [
+        .executable(name: "GitHubCollector", targets: ["GitHubCollector"])
+    ],
     targets: [
         .executableTarget(
-            name: "HugoDesk"
-        ),
+            name: "GitHubCollector"
+        )
     ]
 )
