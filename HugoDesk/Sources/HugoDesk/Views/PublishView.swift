@@ -107,6 +107,9 @@ struct PublishView: View {
                             Button("查看 Git 状态") {
                                 viewModel.runGitStatus()
                             }
+                            Button("同步远程") {
+                                viewModel.runSyncWithRemote()
+                            }
                             Button("提交并推送") {
                                 viewModel.runPublish()
                             }
@@ -120,7 +123,7 @@ struct PublishView: View {
                             }
                             Spacer()
                         }
-                        Text("检测会验证 git/hugo 可用性、远程可达性与 dry-run 推送权限，并给出可执行命令建议。")
+                        Text("检测会验证 git/hugo 可用性、远程可达性与 dry-run 推送权限，并给出可执行命令建议。推送前可先点击“同步远程”。")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

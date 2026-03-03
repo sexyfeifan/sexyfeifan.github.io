@@ -51,13 +51,73 @@ final class PublishService {
             }
         }
 
-        let push = try runner.run(
+        do {
+            let push = try runner.run(
+                command: "git",
+                arguments: ["push", project.gitRemote, project.publishBranch],
+                in: project.rootURL
+            )
+            if !push.output.isEmpty {
+                logs.append(push.output)
+            }
+        } catch let ProcessRunnerError.commandFailed(_, _, output) {
+            if containsNonFastForward(output) {
+                logs.append("Push 被拒绝（non-fast-forward），已自动执行同步后重试。")
+                let syncOutput = try syncWithRemote(project: project, remoteURL: remoteURL)
+                if !syncOutput.isEmpty {
+                    logs.append(syncOutput)
+                }
+                let retryPush = try runner.run(
+                    command: "git",
+                    arguments: ["push", project.gitRemote, project.publishBranch],
+                    in: project.rootURL
+                )
+                if !retryPush.output.isEmpty {
+                    logs.append(retryPush.output)
+                }
+            } else {
+                throw ProcessRunnerError.commandFailed(command: "git push", code: 1, output: output)
+            }
+        }
+
+        return logs.joined(separator: "\n")
+    }
+
+    func syncWithRemote(project: BlogProject, remoteURL: String) throws -> String {
+        var logs: [String] = []
+
+        if !remoteURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            let setRemoteResult = ensureRemoteURL(project: project, remoteURL: remoteURL)
+            if !setRemoteResult.isEmpty {
+                logs.append(setRemoteResult)
+            }
+        }
+
+        let fetch = try runner.run(
             command: "git",
-            arguments: ["push", project.gitRemote, project.publishBranch],
+            arguments: ["fetch", project.gitRemote, project.publishBranch],
             in: project.rootURL
         )
-        if !push.output.isEmpty {
-            logs.append(push.output)
+        if !fetch.output.isEmpty {
+            logs.append(fetch.output)
+        }
+
+        let pull = try runner.run(
+            command: "git",
+            arguments: ["pull", "--rebase", "--autostash", project.gitRemote, project.publishBranch],
+            in: project.rootURL
+        )
+        if !pull.output.isEmpty {
+            logs.append(pull.output)
+        }
+
+        let status = try runner.run(
+            command: "git",
+            arguments: ["status", "--short", "--branch"],
+            in: project.rootURL
+        )
+        if !status.output.isEmpty {
+            logs.append(status.output)
         }
 
         return logs.joined(separator: "\n")
@@ -122,6 +182,11 @@ final class PublishService {
             appendTLSHints(lines: &lines, remoteTarget: remoteTarget, publishBranch: project.publishBranch)
         }
 
+        if containsNonFastForward(dryRun.output) {
+            lines.append("⚠️ 检测到 non-fast-forward：本地分支落后于远端。")
+            appendNonFastForwardHints(lines: &lines, remote: project.gitRemote, publishBranch: project.publishBranch)
+        }
+
         if remoteProbe.success && dryRun.success {
             lines.append("✅ 推送链路可用，可以执行提交推送。")
         } else {
@@ -176,6 +241,13 @@ final class PublishService {
         return text.contains("ssl_connect") || text.contains("ssl_error") || text.contains("tls")
     }
 
+    private func containsNonFastForward(_ output: String) -> Bool {
+        let text = output.lowercased()
+        return text.contains("non-fast-forward")
+            || text.contains("fetch first")
+            || text.contains("pushed branch tip is behind")
+    }
+
     private func appendMissingToolHints(lines: inout [String], git: ToolStatus, hugo: ToolStatus, brewPath: String?) {
         var hints: [String] = []
 
@@ -213,6 +285,14 @@ final class PublishService {
         lines.append("- unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY")
         lines.append("- git ls-remote \(remoteTarget) HEAD")
         lines.append("- git push --dry-run \(remoteTarget) \(publishBranch)")
+    }
+
+    private func appendNonFastForwardHints(lines: inout [String], remote: String, publishBranch: String) {
+        lines.append("修复命令：")
+        lines.append("- git fetch \(remote) \(publishBranch)")
+        lines.append("- git pull --rebase --autostash \(remote) \(publishBranch)")
+        lines.append("- git push \(remote) \(publishBranch)")
+        lines.append("也可在应用中点击“同步远程”后再执行“提交并推送”。")
     }
 
     private func statusLine(for status: ToolStatus) -> String {

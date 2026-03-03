@@ -250,6 +250,17 @@ final class AppViewModel: ObservableObject {
         }
     }
 
+    func runSyncWithRemote() {
+        runTask {
+            let output = try self.publishService.syncWithRemote(
+                project: self.project,
+                remoteURL: self.publishRemoteURL
+            )
+            self.publishLog = output.isEmpty ? "同步完成（无输出）。" : output
+            self.statusText = "已与远端分支同步。"
+        }
+    }
+
     func runPublish() {
         runTask {
             let hasContent = !self.editorPost.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
