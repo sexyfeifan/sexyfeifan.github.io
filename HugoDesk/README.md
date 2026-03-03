@@ -25,7 +25,7 @@ swift run
 ## Credential storage
 
 - Project local config bundle: `<blog-root>/.hugodesk.local.json` (remote profile, tokens, AI settings, project settings, theme snapshot)
-- Latest artifacts (current version only): `HugoDesk/latest/`
+- Latest artifacts (current version only): `HugoDesk/latest/` (`HugoDesk.app` + `HugoDesk-vX.Y.Z.dmg` + `HugoDesk-vX.Y.Z-source.zip`)
 - Historical backups (all versions): `<blog-root>/HugoDeskArchive/versions/<version>/`
 - Legacy compatibility storage still available:
   - `~/Library/Application Support/HugoDesk/profiles/*.json`

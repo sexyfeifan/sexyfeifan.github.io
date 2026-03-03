@@ -1,0 +1,284 @@
+import Foundation
+import CoreFoundation
+
+final class PostService {
+    func loadPosts(for project: BlogProject) throws -> [BlogPost] {
+        let contentURL = project.contentURL
+        try FileManager.default.createDirectory(at: contentURL, withIntermediateDirectories: true)
+
+        let files = try FileManager.default.contentsOfDirectory(at: contentURL, includingPropertiesForKeys: nil)
+            .filter { $0.pathExtension.lowercased() == "md" }
+
+        let posts = try files.map(loadPost)
+        return posts.sorted { $0.date > $1.date }
+    }
+
+    func loadPost(at fileURL: URL) throws -> BlogPost {
+        let raw = try String(contentsOf: fileURL, encoding: .utf8)
+        let (frontMatter, body) = splitFrontMatter(from: raw)
+
+        var post = BlogPost.empty(in: fileURL.deletingLastPathComponent())
+        post.fileURL = fileURL
+        post.body = body
+
+        for line in frontMatter.components(separatedBy: .newlines) {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if trimmed.isEmpty || trimmed.hasPrefix("#") {
+                continue
+            }
+            guard let idx = trimmed.firstIndex(of: "=") else {
+                continue
+            }
+
+            let key = String(trimmed[..<idx]).trimmingCharacters(in: .whitespaces)
+            let value = String(trimmed[trimmed.index(after: idx)...]).trimmingCharacters(in: .whitespaces)
+
+            switch key {
+            case "title": post.title = parseString(value)
+            case "date":
+                if let date = parseDate(value) {
+                    post.date = date
+                }
+            case "draft": post.draft = parseBool(value)
+            case "summary": post.summary = parseString(value)
+            case "tags": post.tags = parseArray(value)
+            case "categories": post.categories = parseArray(value)
+            case "pin": post.pin = parseBool(value)
+            case "math": post.math = parseBool(value)
+            case "MathJax", "mathJax": post.mathJax = parseBool(value)
+            case "private": post.isPrivate = parseBool(value)
+            case "searchable": post.searchable = parseBool(value)
+            case "cover": post.cover = parseString(value)
+            case "author", "Author": post.author = parseString(value)
+            case "keywords", "Keywords": post.keywords = parseArray(value)
+            default: break
+            }
+        }
+
+        return post
+    }
+
+    func suggestFileName(from title: String) -> String {
+        "\(slugify(title.isEmpty ? "new-post" : title)).md"
+    }
+
+    func suggestTitle(fromFileName fileName: String) -> String {
+        let base = fileName
+            .replacingOccurrences(of: ".md", with: "", options: [.caseInsensitive])
+            .replacingOccurrences(of: "_", with: " ")
+            .replacingOccurrences(of: "-", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if base.isEmpty {
+            return "未命名文章"
+        }
+        return base
+    }
+
+    func suggestSummary(fromMarkdown markdown: String, maxLength: Int = 140) -> String {
+        let noCode = markdown.replacingOccurrences(
+            of: #"```[\s\S]*?```"#,
+            with: " ",
+            options: .regularExpression
+        )
+        let noImages = noCode.replacingOccurrences(
+            of: #"\!\[[^\]]*\]\([^)]+\)"#,
+            with: " ",
+            options: .regularExpression
+        )
+        let noLinks = noImages.replacingOccurrences(
+            of: #"\[([^\]]+)\]\([^)]+\)"#,
+            with: "$1",
+            options: .regularExpression
+        )
+        let stripped = noLinks
+            .replacingOccurrences(of: #"(^|\n)\s{0,3}#{1,6}\s*"#, with: "$1", options: .regularExpression)
+            .replacingOccurrences(of: #"[>*_`~]"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"\n{2,}"#, with: "\n\n", options: .regularExpression)
+
+        let paragraphs = stripped
+            .components(separatedBy: "\n\n")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+
+        let source = paragraphs.first ?? stripped.trimmingCharacters(in: .whitespacesAndNewlines)
+        if source.isEmpty {
+            return ""
+        }
+
+        if source.count <= maxLength {
+            return source
+        }
+        return String(source.prefix(maxLength)) + "..."
+    }
+
+    func createNewPost(title: String, fileName: String?, in project: BlogProject) -> BlogPost {
+        let desired = sanitizeFileName(fileName ?? "", fallbackTitle: title)
+        let target = uniqueFileURL(in: project.contentURL, baseName: desired)
+        var post = BlogPost.empty(in: project.contentURL)
+        post.fileURL = target
+        post.title = title
+        post.date = Date()
+        post.draft = true
+        return post
+    }
+
+    func savePost(_ post: BlogPost) throws {
+        try FileManager.default.createDirectory(at: post.fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        let raw = renderPost(post)
+        try raw.write(to: post.fileURL, atomically: true, encoding: .utf8)
+    }
+
+    func deletePost(at fileURL: URL) throws {
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            try FileManager.default.removeItem(at: fileURL)
+        }
+    }
+
+    private func splitFrontMatter(from raw: String) -> (String, String) {
+        let lines = raw.components(separatedBy: .newlines)
+        guard lines.first?.trimmingCharacters(in: .whitespaces) == "+++" else {
+            return ("", raw)
+        }
+
+        var endIndex: Int?
+        for idx in 1..<lines.count where lines[idx].trimmingCharacters(in: .whitespaces) == "+++" {
+            endIndex = idx
+            break
+        }
+
+        guard let end = endIndex else {
+            return ("", raw)
+        }
+
+        let front = lines[1..<end].joined(separator: "\n")
+        let body = lines[(end + 1)...].joined(separator: "\n")
+        return (front, body)
+    }
+
+    private func parseDate(_ raw: String) -> Date? {
+        let text = parseString(raw)
+        let iso = ISO8601DateFormatter()
+        iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let value = iso.date(from: text) {
+            return value
+        }
+
+        let iso2 = ISO8601DateFormatter()
+        iso2.formatOptions = [.withInternetDateTime]
+        return iso2.date(from: text)
+    }
+
+    private func renderPost(_ post: BlogPost) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+
+        var lines: [String] = []
+        lines.append("+++")
+        lines.append("title = \(encode(post.title))")
+        lines.append("date = \(formatter.string(from: post.date))")
+        lines.append("draft = \(post.draft ? "true" : "false")")
+
+        if !post.summary.isEmpty { lines.append("summary = \(encode(post.summary))") }
+        if !post.tags.isEmpty { lines.append("tags = \(encodeArray(post.tags))") }
+        if !post.categories.isEmpty { lines.append("categories = \(encodeArray(post.categories))") }
+        if post.pin { lines.append("pin = true") }
+        if post.math { lines.append("math = true") }
+        if post.mathJax { lines.append("MathJax = true") }
+        if post.isPrivate { lines.append("private = true") }
+        if !post.searchable { lines.append("searchable = false") }
+        if !post.cover.isEmpty { lines.append("cover = \(encode(post.cover))") }
+        if !post.author.isEmpty { lines.append("author = \(encode(post.author))") }
+        if !post.keywords.isEmpty { lines.append("keywords = \(encodeArray(post.keywords))") }
+
+        lines.append("+++")
+        lines.append("")
+        lines.append(post.body)
+        if !post.body.hasSuffix("\n") {
+            lines.append("")
+        }
+
+        return lines.joined(separator: "\n")
+    }
+
+    private func parseString(_ raw: String) -> String {
+        var value = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        if value.hasPrefix("\"") && value.hasSuffix("\"") && value.count >= 2 {
+            value.removeFirst()
+            value.removeLast()
+        } else if value.hasPrefix("'") && value.hasSuffix("'") && value.count >= 2 {
+            value.removeFirst()
+            value.removeLast()
+        }
+        return value
+    }
+
+    private func parseBool(_ raw: String) -> Bool {
+        parseString(raw).lowercased() == "true"
+    }
+
+    private func parseArray(_ raw: String) -> [String] {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.hasPrefix("[") && trimmed.hasSuffix("]") else {
+            let single = parseString(trimmed)
+            return single.isEmpty ? [] : [single]
+        }
+        let content = String(trimmed.dropFirst().dropLast())
+        if content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return []
+        }
+        return content.split(separator: ",")
+            .map { parseString(String($0)) }
+            .filter { !$0.isEmpty }
+    }
+
+    private func encode(_ text: String) -> String {
+        let escaped = text
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+        return "\"\(escaped)\""
+    }
+
+    private func encodeArray(_ values: [String]) -> String {
+        "[" + values.map { encode($0) }.joined(separator: ", ") + "]"
+    }
+
+    private func sanitizeFileName(_ raw: String, fallbackTitle: String) -> String {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        let noExt = trimmed.hasSuffix(".md") ? String(trimmed.dropLast(3)) : trimmed
+        let base = noExt.isEmpty ? slugify(fallbackTitle.isEmpty ? "new-post" : fallbackTitle) : slugify(noExt)
+        return base.isEmpty ? "post-\(Int(Date().timeIntervalSince1970))" : base
+    }
+
+    private func uniqueFileURL(in dir: URL, baseName: String) -> URL {
+        let fm = FileManager.default
+        var attempt = 1
+        var candidate = dir.appendingPathComponent("\(baseName).md")
+        while fm.fileExists(atPath: candidate.path) {
+            attempt += 1
+            candidate = dir.appendingPathComponent("\(baseName)-\(attempt).md")
+        }
+        return candidate
+    }
+
+    private func slugify(_ source: String) -> String {
+        let pinyin = toPinyin(source)
+        let lower = pinyin.lowercased()
+        let filtered = lower.map { char -> Character in
+            if char.isLetter || char.isNumber {
+                return char
+            }
+            return "-"
+        }
+        let compact = String(filtered)
+            .replacingOccurrences(of: "-+", with: "-", options: .regularExpression)
+            .trimmingCharacters(in: CharacterSet(charactersIn: "-"))
+        return compact.isEmpty ? "post-\(Int(Date().timeIntervalSince1970))" : compact
+    }
+
+    private func toPinyin(_ source: String) -> String {
+        let mutable = NSMutableString(string: source) as CFMutableString
+        CFStringTransform(mutable, nil, kCFStringTransformToLatin, false)
+        CFStringTransform(mutable, nil, kCFStringTransformStripCombiningMarks, false)
+        return mutable as String
+    }
+}
