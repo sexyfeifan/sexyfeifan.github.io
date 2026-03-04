@@ -4,7 +4,7 @@ date = 2026-03-04T17:15:28Z
 draft = false
 +++
 
-
+```markdown
 # CoPaw — 协作个人智能体工作站
 
 ## 项目概述
@@ -37,26 +37,8 @@ docker run -p 8088:8088 agentscope/copaw:latest
 - **开源开放**：基于 AgentScope 框架构建
 - **隐私优先**：数据完全由用户掌控
 - **多模态支持**：兼容各类聊天应用接口
-```能力
 - 多智能体调度机制
 - 可扩展的插件体系
 
-## 快速安装
-
-### 命令行安装
-```bash
-curl -fsSL https://copaw.agentscope.io/install.sh | bash
-```
-
-### Python 包安装
-```bash
-pip install copaw
-```
-
-### Docker 部署
-```bash
-docker run -p 8088:8088 agentscope/copaw:latest
-```
-
 > 注意：默认服务端口为 8088，可通过 `-p` 参数自定义映射端口
-
+```
