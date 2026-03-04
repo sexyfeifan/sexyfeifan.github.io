@@ -5,7 +5,6 @@ draft = false
 +++
 
 
-```markdown
 # CoPaw — 协作个人智能体工作站
 
 ## 项目概述
