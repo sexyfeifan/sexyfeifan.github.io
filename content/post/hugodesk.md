@@ -2,11 +2,8 @@
 title = "写作 + 发布变成桌面 App"
 date = 2026-03-04T06:37:16Z
 draft = false
+summary = "HugoDesk 🚀"
 +++
-
-
-
-
 
 
 
