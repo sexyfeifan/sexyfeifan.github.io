@@ -8,6 +8,8 @@ pin = true
 
 
 
+
+
 # HugoDesk 🚀
 
 HugoDesk 是一款面向 macOS 的 Hugo 博客桌面客户端（SwiftUI），目标是让你在图形界面中完成 **写作 → 构建 → 检测 → 推送 → GitHub Pages 发布** 的完整流程，减少对命令行的依赖。
