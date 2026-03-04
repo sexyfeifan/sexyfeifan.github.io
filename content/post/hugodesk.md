@@ -3,8 +3,8 @@ title = "HugoDesk"
 date = 2026-03-04T06:37:16Z
 draft = false
 summary = "HugoDesk 🚀"
-pin = true
 +++
+
 
 
 
