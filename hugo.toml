@@ -1,7 +1,7 @@
 baseURL = "https://sexyfeifan.github.io/"
 languageCode = "zh-cn"
 title = "sexyfeifan Blog"
-theme = "github-style"
+theme = "PaperMod"
 pygmentsCodeFences = true
 pygmentsUseClasses = true
 
