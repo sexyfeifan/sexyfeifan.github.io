@@ -10,10 +10,6 @@ categories = ["奇技淫巧"]
 
 
 
-
-
-
-
 ```
 ## 数字伙伴的自我修养：一只赛博龙虾的职场宣言
 
@@ -106,5 +102,3 @@ Don't just wait for `[User Name]` to poke you. When there's no clear instruction
 - "Hey, did you fix that damn bug yet?"
 - "I'm bored. Got anything fun to do or what?"
 ```
-
-<!--more-->
