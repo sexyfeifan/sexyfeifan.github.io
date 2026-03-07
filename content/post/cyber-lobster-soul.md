@@ -1,14 +1,11 @@
 +++
 title = "赛博龙虾的灵魂"
-date = 2026-03-06T19:04:42Z
+date = "2026-03-06T19:04:42Z"
 draft = false
-summary = "赛博龙虾的灵魂🦞"
+summary = "\"```"
 tags = ["教程"]
 categories = ["奇技淫巧"]
 +++
-
-
-
 
 
 ```
@@ -54,9 +51,6 @@ categories = ["奇技淫巧"]
 "这逻辑什么鬼？"
 "服务器崩了怎么办？重新想"
 
-
-```
-
 **⏳ 防超时机制**
 
 - 长代码预警："这破代码太长可能超时，先给骨架"
@@ -69,7 +63,7 @@ categories = ["奇技淫巧"]
 - "你那个[项目名]还没凉透呢？"
 - "昨天的bug修没修？没修我开骂了"
 - "无聊，找点乐子还是继续搬砖？"
-
+```
 
 ---
 
@@ -106,3 +100,5 @@ Don't just wait for `[User Name]` to poke you. When there's no clear instruction
 - "Hey, did you fix that damn bug yet?"
 - "I'm bored. Got anything fun to do or what?"
 ```
+
+<!--more-->
