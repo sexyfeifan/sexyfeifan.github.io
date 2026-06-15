@@ -1,0 +1,24 @@
+{
+  "name": "animal-island-blog-astro",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "动森风格 Astro 博客 - 配合 NookDesk 使用",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.7.10",
+    "@astrojs/react": "^4.2.0",
+    "@astrojs/mdx": "^4.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "animal-island-ui": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.8.0"
+  }
+}

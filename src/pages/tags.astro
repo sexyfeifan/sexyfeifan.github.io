@@ -1,0 +1,212 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter(post => !post.data.draft);
+
+const tags = posts.reduce((acc, post) => {
+  post.data.tags.forEach(tag => {
+    if (!acc[tag]) acc[tag] = [];
+    acc[tag].push(post);
+  });
+  return acc;
+}, {} as Record<string, typeof posts>);
+
+const tagNames = Object.keys(tags).sort((a, b) => tags[b].length - tags[a].length);
+---
+
+<Base title="标签 - 我的无人岛" description="按标签浏览文章">
+  <section class="tags">
+    <h1 class="page-title">
+      <span class="title-emoji">🏷️</span>
+      文章标签
+    </h1>
+    <p class="page-subtitle">共 {tagNames.length} 个标签</p>
+
+    <div class="tags-cloud">
+      {tagNames.map(name => (
+        <a 
+          href={`/tags/${name}`} 
+          class="tag-chip"
+          style={`font-size: ${Math.min(1.5, 0.9 + tags[name].length * 0.1)}rem`}
+        >
+          #{name}
+          <span class="tag-count">{tags[name].length}</span>
+        </a>
+      ))}
+    </div>
+
+    <div class="tags-list">
+      {tagNames.map(name => (
+        <section class="tag-section">
+          <h2 class="tag-title">
+            <a href={`/tags/${name}`}>#{name}</a>
+            <span class="tag-total">{tags[name].length} 篇</span>
+          </h2>
+          <div class="tag-posts">
+            {tags[name]
+              .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+              .slice(0, 5)
+              .map(post => (
+                <a href={`/blog/${post.slug}`} class="tag-post">
+                  <span class="post-date">
+                    {post.data.pubDate.toLocaleDateString('zh-CN', {
+                      month: '2-digit',
+                      day: '2-digit'
+                    })}
+                  </span>
+                  <span class="post-title">{post.data.title}</span>
+                </a>
+              ))
+            }
+            {tags[name].length > 5 && (
+              <span class="more">还有 {tags[name].length - 5} 篇...</span>
+            )}
+          </div>
+        </section>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tags {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .title-emoji {
+    font-size: 2rem;
+  }
+
+  .page-subtitle {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+  }
+
+  .tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 4rem;
+    justify-content: center;
+  }
+
+  .tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg-card);
+    color: var(--text);
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    border: 2px solid var(--border);
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .tag-chip:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-2px);
+  }
+
+  .tag-count {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+  }
+
+  .tags-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .tag-section {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 2px solid var(--border);
+  }
+
+  .tag-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .tag-title a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .tag-title a:hover {
+    color: var(--primary);
+  }
+
+  .tag-total {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-weight: normal;
+  }
+
+  .tag-posts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .tag-post {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.2s;
+  }
+
+  .tag-post:hover {
+    background: var(--primary-light);
+  }
+
+  .post-date {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    min-width: 50px;
+  }
+
+  .post-title {
+    font-weight: 600;
+  }
+
+  .more {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    padding: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 1.8rem;
+    }
+  }
+</style>

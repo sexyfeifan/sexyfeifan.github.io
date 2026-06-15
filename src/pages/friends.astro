@@ -1,0 +1,199 @@
+---
+import Base from '../layouts/Base.astro';
+
+const friends = [
+  {
+    name: '梁典典的博客',
+    description: '记录生活，分享技术',
+    avatar: 'https://minio.itbug.shop/blog/uploads/0e3b2694-af42-4687-8f41-ca949d8d3e0c.jpeg',
+    url: 'https://itbug.shop',
+  },
+  {
+    name: 'animal-island-ui',
+    description: '动森风格 React 组件库',
+    avatar: '🎨',
+    url: 'https://guokaigdg.github.io/animal-island-ui/',
+  },
+];
+---
+
+<Base title="友链 - 我的无人岛" description="友情链接">
+  <section class="friends">
+    <h1 class="page-title">
+      <span class="title-emoji">🤝</span>
+      友情链接
+    </h1>
+    <p class="page-subtitle">志同道合的朋友们</p>
+
+    <div class="friends-grid">
+      {friends.map(friend => (
+        <a href={friend.url} target="_blank" class="friend-card">
+          <div class="friend-avatar">
+            {friend.avatar.startsWith('http') ? (
+              <img src={friend.avatar} alt={friend.name} />
+            ) : (
+              <span class="avatar-emoji">{friend.avatar}</span>
+            )}
+          </div>
+          <div class="friend-info">
+            <h2 class="friend-name">{friend.name}</h2>
+            <p class="friend-desc">{friend.description}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <div class="add-friend">
+      <h3>申请友链</h3>
+      <p>如果你想和我交换友链，请通过以下方式联系我：</p>
+      <ul>
+        <li>在 GitHub 上提交 Issue</li>
+        <li>发送邮件到 your-email@example.com</li>
+      </ul>
+      <div class="friend-requirements">
+        <h4>友链要求：</h4>
+        <ul>
+          <li>网站内容健康、积极向上</li>
+          <li>网站可以正常访问</li>
+          <li>请先添加本站友链</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .friends {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .title-emoji {
+    font-size: 2rem;
+  }
+
+  .page-subtitle {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+  }
+
+  .friends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .friend-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 2px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+
+  .friend-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+  }
+
+  .friend-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-light);
+    flex-shrink: 0;
+  }
+
+  .friend-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-emoji {
+    font-size: 2rem;
+  }
+
+  .friend-info {
+    flex: 1;
+  }
+
+  .friend-name {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .friend-desc {
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+
+  .add-friend {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 2rem;
+    border: 2px solid var(--border);
+  }
+
+  .add-friend h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+  }
+
+  .add-friend p {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .add-friend ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-light);
+  }
+
+  .add-friend li {
+    margin-bottom: 0.5rem;
+  }
+
+  .friend-requirements {
+    background: var(--primary-light);
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .friend-requirements h4 {
+    margin-bottom: 0.75rem;
+    color: var(--primary);
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 1.8rem;
+    }
+
+    .friends-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

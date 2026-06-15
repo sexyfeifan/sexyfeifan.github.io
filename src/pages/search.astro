@@ -1,0 +1,230 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter(post => !post.data.draft)
+  .map(post => ({
+    slug: post.slug,
+    title: post.data.title,
+    description: post.data.description,
+    category: post.data.category,
+    tags: post.data.tags,
+    cover: post.data.cover,
+    date: post.data.pubDate.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }),
+  }));
+---
+
+<Base title="搜索 - 我的无人岛" description="搜索文章">
+  <section class="search">
+    <h1 class="page-title">
+      <span class="title-emoji">🔍</span>
+      搜索文章
+    </h1>
+
+    <div class="search-box">
+      <input 
+        type="text" 
+        id="search-input" 
+        placeholder="输入关键词搜索..." 
+        autocomplete="off"
+      />
+    </div>
+
+    <div id="search-results" class="search-results">
+      <p class="search-hint">输入关键词开始搜索</p>
+    </div>
+  </section>
+</Base>
+
+<script define:vars={{ posts }}>
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+
+  function searchPosts(query) {
+    if (!query.trim()) {
+      return [];
+    }
+
+    const lowerQuery = query.toLowerCase();
+    return posts.filter(post => 
+      post.title.toLowerCase().includes(lowerQuery) ||
+      post.description.toLowerCase().includes(lowerQuery) ||
+      post.category.toLowerCase().includes(lowerQuery) ||
+      post.tags.some(tag => tag.toLowerCase().includes(lowerQuery))
+    );
+  }
+
+  function renderResults(results, query) {
+    if (!query.trim()) {
+      return '<p class="search-hint">输入关键词开始搜索</p>';
+    }
+
+    if (results.length === 0) {
+      return `<p class="search-empty">没有找到与 "${query}" 相关的文章</p>`;
+    }
+
+    return `
+      <p class="search-count">找到 ${results.length} 篇文章</p>
+      <div class="results-list">
+        ${results.map(post => `
+          <a href="/blog/${post.slug}" class="result-item">
+            <span class="result-cover">${post.cover}</span>
+            <div class="result-info">
+              <h3 class="result-title">${highlightText(post.title, query)}</h3>
+              <p class="result-desc">${highlightText(post.description, query)}</p>
+              <div class="result-meta">
+                <span class="result-category">${post.category}</span>
+                <span class="result-date">${post.date}</span>
+              </div>
+            </div>
+          </a>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function highlightText(text, query) {
+    if (!query.trim()) return text;
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+
+  searchInput?.addEventListener('input', (e) => {
+    const query = e.target.value;
+    const results = searchPosts(query);
+    if (searchResults) {
+      searchResults.innerHTML = renderResults(results, query);
+    }
+  });
+</script>
+
+<style>
+  .search {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .title-emoji {
+    font-size: 2rem;
+  }
+
+  .search-box {
+    margin-bottom: 2rem;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    color: var(--text);
+    font-family: var(--font-main);
+    transition: border-color 0.2s;
+  }
+
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  .search-box input::placeholder {
+    color: var(--text-light);
+  }
+
+  .search-hint, .search-empty, .search-count {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 2px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+
+  .result-item:hover {
+    border-color: var(--primary);
+    transform: translateX(4px);
+  }
+
+  .result-cover {
+    font-size: 2rem;
+  }
+
+  .result-info {
+    flex: 1;
+  }
+
+  .result-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .result-desc {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .result-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+  }
+
+  .result-category {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+  }
+
+  :global(mark) {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.1rem 0.2rem;
+    border-radius: 3px;
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 1.8rem;
+    }
+
+    .result-item {
+      flex-direction: column;
+    }
+  }
+</style>

@@ -1,0 +1,316 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter(post => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categories = [...new Set(posts.map(post => post.data.category))];
+const tags = [...new Set(posts.flatMap(post => post.data.tags))];
+const recentPosts = posts.slice(0, 6);
+---
+
+<Base title="首页 - 我的无人岛" description="动森风格个人博客，记录生活，分享技术">
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="hero-emoji">🏝️</span>
+        欢迎来到我的无人岛
+      </h1>
+      <p class="hero-subtitle">记录生活，分享技术，学习成长</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-number">{posts.length}</span>
+          <span class="stat-label">篇文章</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">{categories.length}</span>
+          <span class="stat-label">个分类</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">{tags.length}</span>
+          <span class="stat-label">个标签</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">
+      <span class="section-emoji">📝</span>
+      最新文章
+    </h2>
+    <div class="posts-grid">
+      {recentPosts.map(post => (
+        <article class={`post-card color-${post.data.color}`}>
+          <div class="post-header">
+            <span class="post-cover">{post.data.cover}</span>
+            <span class="post-category">{post.data.category}</span>
+          </div>
+          <h3 class="post-title">
+            <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+          </h3>
+          <p class="post-excerpt">{post.data.description}</p>
+          <div class="post-meta">
+            <span class="post-date">
+              {post.data.pubDate.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+              })}
+            </span>
+            <span class="post-read-time">{post.data.readTime}</span>
+          </div>
+          <div class="post-tags">
+            {post.data.tags.slice(0, 3).map(tag => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+    <div class="view-all">
+      <a href="/archive" class="btn">查看所有文章 →</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">
+      <span class="section-emoji">🏷️</span>
+      热门标签
+    </h2>
+    <div class="tags-cloud">
+      {tags.map(tag => (
+        <a href={`/tags/${tag}`} class="tag-chip">#{tag}</a>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--bg) 100%);
+    border-radius: var(--radius);
+    padding: 3rem 2rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    border: 2px solid var(--border);
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .hero-emoji {
+    font-size: 3rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary);
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+
+  .section {
+    margin-bottom: 3rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-emoji {
+    font-size: 1.5rem;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .post-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 2px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow);
+  }
+
+  .post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  .post-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-cover {
+    font-size: 2rem;
+  }
+
+  .post-category {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .post-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-title a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .post-title a:hover {
+    color: var(--primary);
+  }
+
+  .post-excerpt {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+  }
+
+  .view-all {
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .btn:hover {
+    opacity: 0.9;
+  }
+
+  .tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .tag-chip {
+    background: var(--bg-card);
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    border: 2px solid var(--border);
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .tag-chip:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* 动森风格卡片颜色 */
+  .color-app-pink { border-left: 4px solid #ff6b9d; }
+  .color-purple { border-left: 4px solid #9b59b6; }
+  .color-app-blue { border-left: 4px solid #4a9eff; }
+  .color-app-yellow { border-left: 4px solid #f1c40f; }
+  .color-app-orange { border-left: 4px solid #e67e22; }
+  .color-app-teal { border-left: 4px solid #1abc9c; }
+  .color-app-green { border-left: 4px solid #2ecc71; }
+  .color-app-red { border-left: 4px solid #e74c3c; }
+  .color-lime-green { border-left: 4px solid #84cc16; }
+  .color-yellow-green { border-left: 4px solid #a3e635; }
+  .color-brown { border-left: 4px solid #92400e; }
+  .color-warm-peach-pink { border-left: 4px solid #fda4af; }
+
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 1.8rem;
+    }
+
+    .hero-stats {
+      gap: 1.5rem;
+    }
+
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

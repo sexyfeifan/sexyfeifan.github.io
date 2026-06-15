@@ -1,0 +1,233 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const { title, description = '动森风格个人博客', image = '/images/og-default.png' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+    <meta property="og:url" content={canonicalURL} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="nav-brand">
+          <span class="nav-emoji">🏝️</span>
+          <span class="nav-title">我的无人岛</span>
+        </a>
+        <div class="nav-links">
+          <a href="/">首页</a>
+          <a href="/archive">归档</a>
+          <a href="/categories">分类</a>
+          <a href="/tags">标签</a>
+          <a href="/projects">项目</a>
+          <a href="/friends">友链</a>
+          <a href="/search">搜索</a>
+          <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+            <span class="theme-icon">🌙</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <p>© 2026 我的无人岛 · 使用 Astro 构建 · 动森风格</p>
+        <p class="footer-links">
+          <a href="https://github.com/your-username" target="_blank">GitHub</a>
+          <span>·</span>
+          <a href="/rss.xml">RSS</a>
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeIcon = themeToggle?.querySelector('.theme-icon');
+      
+      function getTheme() {
+        return localStorage.getItem('theme') || 'light';
+      }
+      
+      function setTheme(theme: string) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        if (themeIcon) {
+          themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+      }
+      
+      setTheme(getTheme());
+      
+      themeToggle?.addEventListener('click', () => {
+        const current = getTheme();
+        setTheme(current === 'dark' ? 'light' : 'dark');
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --primary: #4a9eff;
+    --primary-light: #e8f4ff;
+    --bg: #faf8f5;
+    --bg-card: #ffffff;
+    --text: #2d3436;
+    --text-light: #636e72;
+    --border: #e8e6e1;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --radius: 16px;
+    --font-main: 'Nunito', 'ZCOOL KuaiLe', sans-serif;
+  }
+
+  [data-theme="dark"] {
+    --primary: #64b5f6;
+    --primary-light: #1e3a5f;
+    --bg: #1a1a2e;
+    --bg-card: #16213e;
+    --text: #e0e0e0;
+    --text-light: #a0a0a0;
+    --border: #2d3748;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-main);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    width: 100%;
+  }
+
+  .navbar {
+    background: var(--bg-card);
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  .nav-emoji {
+    font-size: 1.5rem;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover {
+    color: var(--primary);
+  }
+
+  .theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.25rem;
+  }
+
+  .footer {
+    background: var(--bg-card);
+    border-top: 2px solid var(--border);
+    padding: 2rem 0;
+    margin-top: 4rem;
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+
+  .footer-links {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .footer-links a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>
