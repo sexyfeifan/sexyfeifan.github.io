@@ -1,13 +1,13 @@
 ---
 title: "测试一下"
-description: "这是一篇测试文章"
-pubDate: 2026-06-16
-category: "未分类"
-tags: []
-cover: "📝"
-color: "app-blue"
-readTime: "5 分钟"
+date: "2026-06-17T07:09:48Z"
 draft: true
+summary: "这是一篇测试文章"
+categories:
+  - "未分类"
+cover: "📝"
 ---
+
+
 
 测试一下咯
