@@ -1,18 +1,13 @@
 ---
 title: "在无人岛上学会慢生活"
-date: "2026-06-17T07:10:01Z"
-draft: true
-summary: "从钓竿到夕阳，重新发现生活的节奏"
-tags:
-  - "动森"
-  - "慢生活"
-  - "自然"
-categories:
-  - "生活"
+description: "从钓竿到夕阳，重新发现生活的节奏"
+pubDate: 2026-04-18
+category: "生活"
+tags: ["动森", "慢生活", "自然"]
 cover: "🏝️"
+color: "app-blue"
+readTime: "6 分钟"
 ---
-
-
 
 ## 重新找回生活的节奏
 
